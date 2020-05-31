@@ -1,0 +1,17 @@
+# stmm-mynes pkg-config source file
+
+prefix=@STMMI_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: stmm-mynes
+Description: C++ games library - mynes events
+Version: @STMM_MYNES_VERSION@
+URL: http://www.efanomars.com/games/mynes
+# Beware! The space between the library name and the comparison (>=) is necessary!
+Requires: stmm-games >= @STMM_MYNES_REQ_STMM_GAMES_VERSION@
+Conflicts:
+Libs: -L${libdir} -lstmm-mynes
+Cflags: -I${includedir}/stmm-mynes -I${includedir}
+

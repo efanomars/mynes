@@ -1,0 +1,104 @@
+Source: mynes
+Priority: optional
+Maintainer: Stefano Marsili <efanomars@gmx.ch>
+Build-Depends: debhelper (>= 9)
+             , cmake
+             , python3
+             , doxygen
+             , graphviz
+             , libstmm-games-dev (>= @STMM_MYNES_REQ_STMM_GAMES_VERSION@)
+             , libstmm-games-xml-game-dev (>= @STMM_MYNES_XML_REQ_STMM_GAMES_XML_GAME_VERSION@)
+             , libstmm-games-xml-gtk-dev (>= @MYNES_REQ_STMM_GAMES_XML_GTK_VERSION@)
+             , libstmm-input-gtk-dm-dev (>= @MYNES_REQ_STMM_INPUT_GTK_DM_VERSION@)
+Standards-Version: 3.9.8
+Section: libs
+Homepage: @STMMI_WEBSITE_SECTION@/mynes
+Vcs-Git: https://www.gitlab.com/efanomars/mynes.git
+#Vcs-Browser: https://www.gitlab.com/efanomars/mynes.git
+
+
+#---------------------------------------------------------------------
+Package: libstmm-mynes@STMM_MYNES_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-games@STMM_MYNES_REQ_STMM_GAMES_MAJOR_VERSION@ (>= @STMM_MYNES_REQ_STMM_GAMES_VERSION@)
+       , ${shlibs:Depends}, ${misc:Depends}
+Recommends: mynes
+Description: Rolling minesweeper with islands and sonars - model
+ Minesweeper game with scrolling variant.
+ .
+ This C++ library provides the game's model events needed by the
+ mynes executable.
+
+Package: libstmm-mynes-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-mynes@STMM_MYNES_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-games-dev (>= @STMM_MYNES_REQ_STMM_GAMES_VERSION@)
+       , ${misc:Depends}
+Recommends: mynes
+Description: Rolling minesweeper with islands and sonars - model (develop)
+ Minesweeper game with scrolling variant.
+ .
+ This library provides the game's model events needed by the
+ mynes executable.
+ .
+ This package contains the development headers for the library found in
+ libstmm-mynes@STMM_MYNES_MAJOR_VERSION@.
+ .
+ The minimum requirement is a C++14 compiler.
+
+
+#---------------------------------------------------------------------
+Package: libstmm-mynes-xml@STMM_MYNES_XML_MAJOR_VERSION@
+Architecture: any
+Depends: libstmm-mynes@STMM_MYNES_MAJOR_VERSION@ (>= @STMM_MYNES_XML_REQ_STMM_MYNES_VERSION@)
+       , libstmm-games-xml-game@STMM_MYNES_XML_REQ_STMM_GAMES_XML_GAME_MAJOR_VERSION@ (>= @STMM_MYNES_XML_REQ_STMM_GAMES_XML_GAME_VERSION@)
+       , ${shlibs:Depends}, ${misc:Depends}
+Recommends: mynes
+Description: Rolling minesweeper with islands and sonars - xml definitions
+ Minesweeper game with scrolling variant.
+ .
+ This C++ library provides the xml definitions of events defined in
+ libstmm-mynes@STMM_MYNES_MAJOR_VERSION@.
+
+Package: libstmm-mynes-xml-dev
+Section: libdevel
+Architecture: any
+Depends: libstmm-mynes-xml@STMM_MYNES_XML_MAJOR_VERSION@ (= ${binary:Version})
+       , libstmm-mynes-dev (>= @STMM_MYNES_XML_REQ_STMM_MYNES_VERSION@)
+       , libstmm-games-xml-game-dev (>= @STMM_MYNES_XML_REQ_STMM_GAMES_XML_GAME_VERSION@)
+       , ${misc:Depends}
+Recommends: mynes
+Description: Rolling minesweeper with islands and sonars - xml definitions (develop)
+ Minesweeper game with scrolling variant.
+ .
+ This library provides the xml definitions of events defined in
+ libstmm-mynes@STMM_MYNES_MAJOR_VERSION@.
+ .
+ This package contains the development headers for the library found in
+ libstmm-mynes-xml@STMM_MYNES_XML_MAJOR_VERSION@.
+ .
+ The minimum requirement is a C++14 compiler.
+
+
+#---------------------------------------------------------------------
+Package: mynes
+Architecture: any
+Depends: libstmm-mynes-xml@STMM_MYNES_XML_MAJOR_VERSION@ (>= @MYNES_REQ_STMM_MYNES_XML_VERSION@)
+       , libstmm-games-xml-gtk@MYNES_REQ_STMM_GAMES_XML_GTK_MAJOR_VERSION@ (>= @MYNES_REQ_STMM_GAMES_XML_GTK_VERSION@)
+       , libstmm-input-gtk-dm@MYNES_REQ_STMM_INPUT_GTK_DM_MAJOR_VERSION@ (>= @MYNES_REQ_STMM_INPUT_GTK_DM_VERSION@)
+       , ${shlibs:Depends}, ${misc:Depends}
+Suggests: libstmm-input-gtk-bt
+        , libstmm-input-gtk-xi
+Description: Rolling minesweeper with islands and sonars
+ Minesweeper game with scrolling variant.
+ .
+ Features:
+   - classic minesweeper with many sizes
+   - scrolling variant with lives
+   - sonars detecting mines in subset of neighbour cells
+   - islands to increase difficulty
+   - can be played with keyboard, mouse and touch
+   - touch friendly interface if launched with --touch option
+   - two player mode if launched with --keys option
+

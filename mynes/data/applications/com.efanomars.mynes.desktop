@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Mynes
+Icon=mynes
+Type=Application
+Terminal=false
+Categories=Game;
+Keywords=minesweeper;sonar;rolling;stmm-input;stmm-games;play;
+Comment=Rolling minesweeper with sonars
+Exec=mynes
+GenericName=Mynes
+Name[en_US]=Mynes

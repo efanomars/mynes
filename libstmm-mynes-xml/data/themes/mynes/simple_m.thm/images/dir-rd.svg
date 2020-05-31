@@ -1,0 +1,7 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" 
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <desc>Sonar direction right down</desc>
+  <path stroke="none" fill="black" fill-opacity="0.8" d="M 50 50 L 70 100 L 100 100 L 100 70 z"/>
+</svg>

@@ -1,0 +1,44 @@
+#=======
+# mynes
+#=======
+
+Requirements
+------------
+g++ compiler or compatible (>= C++14)
+libstmm-mynes-xml
+libstmm-games-xml-gtk (installed)
+libstmm-input-gtk-dm (installed)
+
+
+Instructions
+------------
+
+From this directory execute the following commands:
+
+  $ mkdir build
+  $ cd build
+
+  $ cmake -D CMAKE_BUILD_TYPE=Release ..
+
+Instead of 'Release' CMAKE_BUILD_TYPE can also be set to
+   'Debug', 'MinSizeRel' or 'RelWithDebInfo'.
+To change the default installation directory add definition
+   '-D CMAKE_INSTALL_PREFIX=/home/adam/mybin'  to the preceding command.
+
+  $ make
+
+  $ sudo make install
+
+sudo might be omitted if installing to a directory owned by the current user.
+
+
+
+Alternatively you can just execute the script
+
+  $ ./scripts/install_mynes.py  -b Release
+
+setting the parameter(s) to your preferred value (like above).
+
+  $ ./scripts/install_mynes.py  --help
+
+for a description of all available options.

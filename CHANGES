@@ -1,0 +1,96 @@
+mynes (0.12) unstable; urgency=low
+
+  * Modify sonar directional svgs to avoid librsvg bug (on Manjaro)
+  * Remove empty image
+  * Adapt to stmm-games API changes
+  * Fix doxy comments
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 01 Jun 2020 19:29:39 +0100
+
+mynes (0.11) unstable; urgency=low
+
+  * Adapt to stmm-games API changes
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 11 May 2020 19:29:39 +0100
+
+mynes (0.10) unstable; urgency=low
+
+  * Adapt to stmm-games API changes
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Thu, 30 Apr 2020 19:29:39 +0100
+
+mynes (0.9) unstable; urgency=low
+
+  * Qualify .desktop file
+  * Website section
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Sat, 25 Apr 2020 19:29:39 +0100
+
+mynes (0.8) unstable; urgency=low
+
+  * Fix cmake add_custom_target bug
+  * Add pylint3 to checkcode test
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Fri, 10 Apr 2020 19:29:39 +0100
+
+mynes (0.7) unstable; urgency=low
+
+  * stmm-input API changes recompilation
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 09 Mar 2020 19:29:39 +0100
+
+mynes (0.6) unstable; urgency=low
+
+  * Specify plugin groups to load
+  * Use new authors api
+  * Add sounds to games
+  * Add --no-sound option
+  * Change a default key (more ergonomical)
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 02 Mar 2020 19:29:39 +0100
+
+mynes (0.5) unstable; urgency=low
+
+  * Fix FIllerEvent bug
+  * Use FIllerEvent at game start for rolling games
+  * Improve theme.xml DrawTile section
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 02 Dec 2019 19:29:39 +0100
+
+mynes (0.4) unstable; urgency=low
+
+  * Visual alert on life loss
+  * SonarEvent can be launched
+  * Add watch file to deb packaging
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Sat, 16 Nov 2019 19:29:39 +0100
+
+mynes (0.3) unstable; urgency=low
+
+  * Apply iwyu
+  * Adapt build script to tarball deployment
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Thu, 24 Oct 2019 19:29:39 +0100
+
+mynes (0.2) unstable; urgency=low
+
+  * Improve build scripts
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Fri, 13 Sep 2019 19:29:39 +0100
+
+mynes (0.1) unstable; urgency=low
+
+  * Initial release
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 02 Sep 2019 19:29:39 +0100

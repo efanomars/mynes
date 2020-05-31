@@ -1,0 +1,142 @@
+<?xml version="1.0" ?>
+<!--
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, see <http://www.gnu.org/licenses/>
+-->
+<Theme _ign_version="1" internalName="Simple-M">
+	<Description>Simple - Mynes game theme</Description>
+	<Supports>mynes</Supports>
+	<Extends>Simple</Extends>
+	<Images>
+		<Image imgId="UncoverArea" imgFile="uncover-area.svg"/>
+		<Image imgId="DangerBackg" imgFile="danger-backg.svg"/>
+		<Image imgId="IconRedFlag" imgFile="flag.svg"/>
+		<Image imgId="Flashing"    imgFile="flashing.svg"/>
+	</Images>
+	<Sounds>
+		<Sound sndId="SonarStart" sndFile="sonarstart.mp3"/>
+		<Sound sndId="SonarLaunch" sndFile="sonarthrow.mp3"/>
+	</Sounds>
+	<ImageArrays>
+		<FileArray arrayId="squareHideP" imgFile="squarehide%%.svg" sobstStr="%%" fromInt="0" toInt="4"/>
+	</ImageArrays>
+	<Animations>
+		<StaticGrid name="any" _ign_opacity="50%"/>
+	</Animations>
+	<TileAnimations>
+		<TileAnimation aniId="ButtonPress" defaultImgFile="cell-off.svg">
+			<Image duration="50" imgFile="cell-off.svg"/>
+			<Image duration="50" imgFile="cell-backg.svg"/>
+		</TileAnimation>
+		<TileAnimation aniId="SonarDirection" _ign_defaultImgFile="dir-n.svg">
+			<Image duration="10" _ign_imgFile="dir-n.svg"  _ign_desc="none"/>
+			<Image duration="10" imgFile="dir-r.svg"  _ign_desc="east"/>
+			<Image duration="10" imgFile="dir-ru.svg" _ign_desc="north-east"/>
+			<Image duration="10" imgFile="dir-u.svg"  _ign_desc="north"/>
+			<Image duration="10" imgFile="dir-lu.svg" _ign_desc="north-west"/>
+			<Image duration="10" imgFile="dir-l.svg"  _ign_desc="west"/>
+			<Image duration="10" imgFile="dir-ld.svg" _ign_desc="south-west"/>
+			<Image duration="10" imgFile="dir-d.svg"  _ign_desc="south"/>
+			<Image duration="10" imgFile="dir-rd.svg" _ign_desc="south-east"/>
+			<Image duration="10" _ign_imgFile="dir-n.svg"  _ign_desc="none"/>
+		</TileAnimation>
+	</TileAnimations>
+	<Assigns>
+		<Assign idAss="squarsorHideP" arrayId="squareHideP">
+			<Chars charName="SQUARSOR:HIDE"/>
+			<Players fromPlayer="-1" toPlayer="3"/>
+		</Assign>
+	</Assigns>
+	<DrawBlockTile>
+		<Conditional>
+			<If><Char fromChar=" "/></If>
+				<Conditional>
+					<If><Char fromCharCode="1000000" toCharCode="1000047"/></If>
+						<!-- Used for sonar blocks -->
+						<Fill alpha="40%"/>
+						<Stop/>
+				</Conditional>
+			<Else/>
+				<!-- The squarsor block -->
+				<Select>
+					<Case idAss="squarsorP">
+						<SelectedImage/>
+						<Stop/>
+					</Case>
+					<Case idAss="squarsorHideP">
+						<SelectedImage/>
+						<Stop/>
+					</Case>
+				</Select>
+		</Conditional>
+	</DrawBlockTile>
+	<DrawBoardTile>
+		<SelectAni aniName="TILEANI:COVER">
+			<Case to="0" toExcl="true" _ign_DESC="value is -1.0 which means undefined, Not Covered">
+				<Conditional>
+					<If><Char fromChar=" "/></If>
+						<Conditional>
+							<If><Char char="0"/></If>
+								<Image imgFile="cell-backg.svg"/>
+							<Elsif><Char fromChar="1" toChar="9"/></Elsif>
+								<Image imgFile="cell-backg.svg"/>
+								<Text sizeFactor="100%"/>
+							<Elsif><Char fromCharCode="1000048" toCharCode="1000057"/></Elsif>
+								<!-- 0 to 9 for sonar cells  -->
+								<Fill/>
+								<TileAni aniId="SonarDirection" aniName="TILEANI:SONAR"
+											_ign_aniFactor="60%" _ign_invert="true"/>
+								<!--Fade aniName="TILEANI:SONAR" invert="true" aniFactor="0%"-->
+								<Text sizeFactor="80%" addToChar="-1000000"/>
+								<!--/Fade-->
+								<Stop/>
+							<Else/>
+								<!-- Any other not named char -->
+								<Fill/>
+								<!--TileAni aniId="SonarDirection" aniName="TILEANI:SONAR"
+											_ign_aniFactor="60%" _ign_invert="true"/-->
+								<Text sizeFactor="100%" _ign_text="Err"/>
+								<Stop/>
+						</Conditional>
+					<Else/>
+						<Conditional>
+							<If><Char charName="MINE"/></If>
+								<Image imgFile="cell-backg.svg"/>
+								<Image imgFile="mine.svg"/>
+							<Elsif><Char charName="MINE-BANG"/></Elsif>
+								<Image imgFile="cell-backg.svg"/>
+								<Image imgFile="mine-bang.svg"/>
+							<Elsif><Char charName="FLAG-WRONG"/></Elsif>
+								<Image imgFile="cell-backg.svg"/>
+								<Image imgFile="flag-wrong.svg"/>
+						</Conditional>
+				</Conditional>
+			</Case>
+			<Default _ign_DESC="value is 1.0, Covered">
+				<TileAni aniId="ButtonPress" aniName="TILEANI:PRESSED" _ign_aniFactor="60%" _ign_invert="true"/>
+				<Conditional>
+					<If><Font fontName="MYNES-FLAG"/></If>
+						<Image imgFile="flag.svg"/>
+					<Elsif><Font fontName="MYNES-FLAG-MAYBE"/></Elsif>
+						<Image imgFile="flag-maybe.svg"/>
+					<_Ign_Elsif><Font fontName="MYNES-FLAG-NONE"/></_Ign_Elsif>
+						<!-- Draw nothing -->
+					<_Ign_DEBUG_Else/>
+						<_Ign_DEBUG_Text sizeFactor="100%" text="Err"/>
+				</Conditional>
+			</Default>
+		</SelectAni>
+	</DrawBoardTile>
+</Theme>

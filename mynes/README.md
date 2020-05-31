@@ -1,0 +1,4 @@
+mynes                                                              {#mainpage}
+=====
+
+mynes game

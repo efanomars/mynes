@@ -1,0 +1,548 @@
+<?xml version="1.0" ?>
+<!--
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, see <http://www.gnu.org/licenses/>
+-->
+<Game _ign_version="1" internalName="Rolling2" initialInterval="40" additionalHighscoresWait="500"
+			difficulty="55">
+	<Description>Rolling with islands and sonars for two players.</Description>
+	<Description></Description>
+	<Description>BEWARE! App must be started with --keys option to play this.</Description>
+	<Author name="Steafno Marsili"  email="stemars@gmx.ch" website="https://efanomars.com"/>
+	<Constraints levels="1" teams="1" matesPerTeamMax="2">
+		<And>
+			<Option name="TouchMode" value="false"/>
+			<Option name="KeysMode" value="true"/>
+		</And>
+	</Constraints>
+	<Variables>
+		<Var name="Clock" owner="GAME" initial="0" addTime="true" timeBase="SEC"/>
+		<Var name="Lives" owner="TEAM" initial="3"/>
+		<Var name="Score" owner="TEAM" initial="0"/>
+		<Var name="Covered" owner="TEAM" initial="0"/>
+		<Var name="Flags" owner="TEAM" initial="0"/>
+		<Var name="Speed" owner="TEAM" initial="0"/>
+	</Variables>
+	<HighscoresDefinition maxScores="20">
+		<Element description="Score"  varName="Score"/>
+		<Element description="Time"   varName="Clock"  lowestBest="true"/>
+		<Eligibility varName="Score" min="1"/>
+		<Discriminator type="HUMAN_TEAM_MATES"/>
+	</HighscoresDefinition>
+	<Level>
+		<Board width="15" height="17">
+		</Board>
+		<Show height="15" inity="1"/>
+	</Level>
+	<Blocks>
+		<Block internalName="Sonar:3I">
+			<Description>3 I</Description>
+			<Bricks>
+				<DefaultTile charCode="1000000" colorName="blue"/>
+				<!--Tile idChar="A" colorPal="2"/-->
+			</Bricks>
+			<Shapes emptyId=" " wh="3">
+				<Shape>
+					<Line>  A</Line>
+					<Line>  B</Line>
+					<Line>  C</Line>
+				</Shape>
+			</Shapes>
+		</Block>
+		<Block internalName="Sonar:6R">
+			<Description>6 R</Description>
+			<Bricks>
+				<DefaultTile charCode="1000000" colorName="blue"/>
+				<!--Tile idChar="A" colorPal="2"/-->
+			</Bricks>
+			<Shapes emptyId=" " wh="7" seqs="8">
+				<Shape>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>    ABC</Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+				</Shape>
+				<Shape>
+					<Line>      C</Line>
+					<Line>     B </Line>
+					<Line>    A  </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+				</Shape>
+				<Shape>
+					<Line>   C   </Line>
+					<Line>   B   </Line>
+					<Line>   A   </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+				</Shape>
+				<Shape>
+					<Line>C      </Line>
+					<Line> B     </Line>
+					<Line>  A    </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+				</Shape>
+				<Shape>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>CBA    </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+				</Shape>
+				<Shape>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>  A    </Line>
+					<Line> B     </Line>
+					<Line>C      </Line>
+				</Shape>
+				<Shape>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>   A   </Line>
+					<Line>   B   </Line>
+					<Line>   C   </Line>
+				</Shape>
+				<Shape>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>       </Line>
+					<Line>    A  </Line>
+					<Line>     B </Line>
+					<Line>      C</Line>
+				</Shape>
+			</Shapes>
+		</Block>
+	</Blocks>
+	<Layout>
+		<BackgroundWidget image="Background1" alignHoriz="FILL" alignVert="FILL" expandHoriz="true" expandVert="true">
+			<BoxWidget vertical_0="true" vertical_1="true" _ign_switchable="false">
+				<BoxWidget vertical="false" vertical_1="false" expandHoriz="true" alignHoriz="FILL" _ign_switchable="false">
+					<VarWidget title="Time "  titleBesideValue="true" titleFactor="50%" variable="Clock"
+								refWFactor="0.25" refHFactor="0.06" expandHoriz="true" alignHoriz="START"
+								titleAlign="END" valueAlign="START"
+								valueDigits="4"/>
+					<TransparentWidget refWFactor="0.01" refHFactor="0.01"/>
+					<VarWidget title="Lives "  titleBesideValue="true" titleFactor="70%" team="0" variable="Lives"
+								refWFactor="0.20" refHFactor="0.06" expandHoriz="true" alignHoriz="START"
+								titleAlign="END" valueAlign="START"
+								valueDigits="1"/>
+					<TransparentWidget refWFactor="0.01" refHFactor="0.01"/>
+					<VarWidget title="Score "  titleBesideValue="true" titleFactor="55%" team="0" variable="Score"
+								refWFactor="0.27" refHFactor="0.06" expandHoriz="false" alignHoriz="START"
+								titleAlign="END" valueAlign="START"
+								valueDigits="4"/>
+					<TransparentWidget refWFactor="0.01" refHFactor="0.01"/>
+					<VarWidget title=""   titleBesideValue="true" titleFactor="60%" team="0" variable="Flags"
+								refWFactor="0.09" refHFactor="0.06" alignHoriz="END"
+								valueAlign="END"
+								valueDigits="2"/>
+					<TransparentWidget refWFactor="0.01" refHFactor="0.01"/>
+					<VarWidget title="/"  titleBesideValue="true" titleFactor="20%" team="0" variable="Covered"
+								refWFactor="0.09" refHFactor="0.06" alignHoriz="START"
+								titleAlign="START" valueAlign="START"
+								valueDigits="2"/>
+					<_Ign_VarWidget title="OK" titleBesideValue="true" titleFactor="60%" team="0" variable="Score" refWFactor="0.5" refHFactor="0.06" valueDigits="4"/>
+					<_Ign_VarWidget title="KO" titleBesideValue="true" titleFactor="60%" team="0" variable="Lives"  refWFactor="0.5" refHFactor="0.06" valueDigits="4"/>
+				</BoxWidget>
+				<TransparentWidget refHFactor="0.03" refWFactor="1.0"/>
+				<LevelShowWidget/>
+			</BoxWidget>
+		</BackgroundWidget>
+	</Layout>
+	<Events>
+		<VariableEvent evId="EVID-VAR-CLOCK" name="Clock" team="0" start="0">
+			<Listener groupName="VAR_CHANGED" event="EVID-CC-CLOCK-60SEC" msgName="CUMUL_SET_LEFT_COMPARE"/>
+		</VariableEvent>
+
+		<CumulCmpEvent evId="EVID-CC-CLOCK-60SEC" _ign_DESC="fires a 0 for inputs 60 120 180 ...">
+			<Filter>
+				<Input msgName="CUMUL_SET_LEFT_COMPARE" fromValue="0" valueMod="60" valueAdd="-1"/>
+			</Filter>
+			<Listener groupName="COMPARED_EQUAL" event="EVID-VAR-SPEED" msgName="INC" />
+		</CumulCmpEvent>
+
+		<VariableEvent evId="EVID-VAR-SPEED" name="Speed" team="0" start="0">
+			<Listener groupName="VAR_CHANGED" event="EVID-SPEED" msg="0" _ign_DESC="Increase speed"/>
+			<!--Listener groupName="VAR_VALUE" event="EVID-LOG-CUR-SPEED" msg="1119111"/-->
+			<Listener groupName="VAR_VALUE" event="EVID-RAN" msgName="GENERATE_ADD"/>
+		</VariableEvent>
+		<!--LogEvent evId="EVID-LOG-CUR-SPEED" toStdOut="true" tag="9991999"/-->
+
+		<SpeedEvent evId="EVID-SPEED" start="0">
+			<Change repeat="1" _ign_level="1">
+				<Set interval="40" fallEachTicks="35"/>
+			</Change>
+			<!--Change repeat="20" _ign_level="2-21">
+				<Inc interval="-2"/>
+			</Change-->
+			<Change _ign_level="2-...">
+				<Inc interval="-1"/>
+			</Change>
+			<!--Listener groupName="CHANGED" event="EVID-ST-Faster" msg="0"/-->
+		</SpeedEvent>
+
+		<StaticGridEvent  start="0" refSys="SHOW" posZ="100" gridH="3">
+			<Image imgId="UncoverArea"/>
+		</StaticGridEvent>
+
+		<MynesEvent evId="EVID-MYNES" start="0" coverAreaY="4" lockedAreaY="16">
+			<Listener groupName="UNCOVERED_FLAGGED_MINE"     event="EVID-VAR-SPOTTED" msgName="INC"/>
+			<Listener groupName="UNCOVERED_FLAGGED_MINE"     event="EVID-VAR-FLAGS"   msgName="DEC"/>
+			<Listener groupName="UNCOVERED_UNFLAGGED_MINE"   event="EVID-DQ-EXPLODE" msgName="QUEUE_VALUE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+			<Listener groupName="UNCOVERED_UNFLAGGED_MINE"   event="EVID-VAR-LIVES"   msgName="DEC"/>
+			<Listener groupName="UNCOVERED_UNFLAGGED_MINE"   event="EVID-BG-ALERT"    msgName="CONTROL_RESTART"/>
+			<Listener groupName="UNCOVERED_UNFLAGGED_MINE"   event="EVID-ALARM-ALERT" msgName="ALARMS_RESTART"/>
+			<Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-BG-ALERT"    msgName="CONTROL_RESTART"/>
+			<Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-ALARM-ALERT" msgName="ALARMS_RESTART"/>
+			<Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-VAR-LIVES"   msgName="DEC"/>
+			<Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-VAR-FLAGS"   msgName="DEC"/>
+			<Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-DQ-WRONG"    msgName="QUEUE_VALUE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+			<Listener groupName="ADD_FLAG"                   event="EVID-VAR-FLAGS"   msgName="INC"/>
+			<Listener groupName="REMOVE_FLAG"                event="EVID-VAR-FLAGS"   msgName="DEC"/>
+			<!--Listener groupName="REMOVE_FLAG"                event="EVID-ST-REMOVE"   msg="123"/-->
+			<Listener groupName="COVERED_MINES_ADDED"        event="EVID-VAR-COVERED" msgName="ADD_VALUE"/>
+		</MynesEvent>
+
+		<DelayedQueueEvent evId="EVID-DQ-EXPLODE" intervalMillisecs="310">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+			<Listener groupName="VALUE" event="EVID-SND-EXPLOSION"   msgName="PLAY_FREE"/>
+			<!--Listener groupName="VALUE" event="EVID-LOG-EXPLODE"   msg="9991"/-->
+		</DelayedQueueEvent>
+		<SoundEvent evId="EVID-SND-EXPLOSION" name="Explosion" listenerRealtive="true" volume="100">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+		</SoundEvent>
+		<!--LogEvent evId="EVID-LOG-EXPLODE" valueAsXY="true" tag="363636"/-->
+
+		<DelayedQueueEvent evId="EVID-DQ-WRONG" intervalMillisecs="610" maxQueueSize="3">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+			<Listener groupName="VALUE" event="EVID-SND-WRONG"   msgName="PLAY_FREE"/>
+			<!--Listener groupName="VALUE" event="EVID-LOG-WRONG"   msg="9992"/-->
+		</DelayedQueueEvent>
+		<SoundEvent evId="EVID-SND-WRONG" name="Wrong" listenerRealtive="true" volume="100">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+		</SoundEvent>
+		<!--LogEvent evId="EVID-LOG-WRONG" valueAsXY="true" tag="373737"/-->
+
+		<AlarmsEvent evId="EVID-ALARM-ALERT">
+			<SetMillisec value="80" repeat="5"/>
+			<!--Listener groupName="TIMEOUT" event="EVID-LOG-ALARM" msg="878787"/-->
+			<Listener groupName="TIMEOUT" event="EVID-BG-ALERT" msgName="IMG_NEXT"/>
+			<Listener groupName="TIMEOUT" event="EVID-ALARM-ALERT" msgName="ALARMS_NEXT"/>
+		</AlarmsEvent>
+		<!--LogEvent evId="EVID-LOG-ALARM" toStdOut="true" tag="9992999"/-->
+
+		<BackgroundEvent evId="EVID-BG-ALERT" _ign_refSys="SHOW" posZ="150" posX="0" posY="0" width="15" height="4">
+			<Image imgId="Flashing" width="15" height="3"/>
+			<Image                  width="15" height="3"/>
+		</BackgroundEvent>
+
+		<SonarEvent evId="EVID-SONAR-3I" start="2" block="Sonar:3I"
+						auto="false" blockRotateMillisec="1400" launches="true" dirRotateMillisec="230">
+			<Sonar><Char char="N"/></Sonar>
+			<Listener groupName="SONAR_CREATED"  event="EVID-SND-SONAR-CREATED"  msgName="PLAY_FREE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+			<Listener groupName="SONAR_LAUNCHED" event="EVID-SND-SONAR-LAUNCHED" msgName="PLAY_FREE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+		</SonarEvent>
+
+		<SonarEvent evId="EVID-SONAR-6R" start="3" block="Sonar:6R" relPosX="-3" relPosY="-3"
+						auto="false" blockRotateMillisec="1400" launches="true" dirRotateMillisec="230">
+			<Sonar><Char char="R"/></Sonar>
+			<Listener groupName="SONAR_CREATED"  event="EVID-SND-SONAR-CREATED"  msgName="PLAY_FREE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+			<Listener groupName="SONAR_LAUNCHED" event="EVID-SND-SONAR-LAUNCHED" msgName="PLAY_FREE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+		</SonarEvent>
+
+		<SoundEvent evId="EVID-SND-SONAR-CREATED" name="SonarStart" listenerRealtive="true" volume="100">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+		</SoundEvent>
+		<SoundEvent evId="EVID-SND-SONAR-LAUNCHED" name="SonarLaunch" listenerRealtive="true" volume="100">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+		</SoundEvent>
+
+		<VariableEvent evId="EVID-VAR-SPOTTED" name="Score" >
+		</VariableEvent>
+
+		<VariableEvent evId="EVID-VAR-LIVES" name="Lives" >
+			<Listener groupName="VAR_CHANGED" event="EVID-CC-LIVES" msgName="CUMUL_SET_LEFT_COMPARE"/>
+		</VariableEvent>
+		<CumulCmpEvent evId="EVID-CC-LIVES" onCompare="UNCHANGED" initialLeft="0" initialRight="0">
+			<Listener groupName="COMPARED_EQUAL" event="EVID-END" msg="0"/>
+		</CumulCmpEvent>
+
+		<VariableEvent evId="EVID-VAR-COVERED" name="Covered" >
+		</VariableEvent>
+
+		<VariableEvent evId="EVID-VAR-FLAGS" name="Flags" >
+		</VariableEvent>
+		<!--ShowTextEvent evId="EVID-ST-REMOVE" token="%%" duration="2000">
+			<Line>REMOVE %%im%% %%iv%%</Line>
+		</ShowTextEvent-->
+
+		<SquarsorEvent evId="EVID-SQUARSOR1" start="2" areaY="4" areaH="12">
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-PRESS1"   msgName="BUTTON_PRESS"/>
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-SONAR-3I" msgName="ACTIVATE_SONAR_AT"/>
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-SONAR-6R" msgName="ACTIVATE_SONAR_AT"/>
+			<Listener groupName="BUTTON_A_RELEASE"        event="EVID-PRESS1"   msgName="BUTTON_RELEASE"/>
+			<Listener groupName="BUTTON_A_RELEASE_CANCEL" event="EVID-PRESS1"   msgName="BUTTON_RELEASE_CANCEL"/>
+			<Listener groupName="BUTTON_A_MOVE"           event="EVID-PRESS1"   msgName="BUTTON_MOVE"/>
+
+			<Listener groupName="BUTTON_B_PRESS"          event="EVID-MYNES"    msgName="TOGGLE_FLAG"/>
+
+			<Listener groupName="BUTTON_C_PRESS"     event="EVID-SCR" msgName="PUSH_ROW"/>
+			<Listener groupName="BUTTON_C_OOB_PRESS" event="EVID-SCR" msgName="PUSH_ROW"/>
+		</SquarsorEvent>
+		<!--ShowTextEvent evId="EVID-ST-SQ1" token="%%" duration="2000">
+			<Line>SQUARSOR 1 %%im%% %%iv%%</Line>
+		</ShowTextEvent-->
+		<PressEvent evId="EVID-PRESS1" aniName="TILEANI:PRESSED" areaY="4" areaH="12">
+			<Listener groupName="RELEASE"          event="EVID-MYNES" msgName="UNCOVER"/>
+			<!--Listener groupName="RELEASE"          event="EVID-ST-RELEASE1" msg="1111"/-->
+		</PressEvent>
+		<!--ShowTextEvent evId="EVID-ST-RELEASE1" token="%%" duration="2000">
+			<Line>RELEASE 1 %%im%% %%iv%%</Line>
+		</ShowTextEvent-->
+
+		<SquarsorEvent evId="EVID-SQUARSOR2" start="2" areaY="4" areaH="12">
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-PRESS2"   msgName="BUTTON_PRESS"/>
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-SONAR-3I" msgName="ACTIVATE_SONAR_AT"/>
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-SONAR-6R" msgName="ACTIVATE_SONAR_AT"/>
+			<Listener groupName="BUTTON_A_RELEASE"        event="EVID-PRESS2"   msgName="BUTTON_RELEASE"/>
+			<Listener groupName="BUTTON_A_RELEASE_CANCEL" event="EVID-PRESS2"   msgName="BUTTON_RELEASE_CANCEL"/>
+			<Listener groupName="BUTTON_A_MOVE"           event="EVID-PRESS2"   msgName="BUTTON_MOVE"/>
+
+			<Listener groupName="BUTTON_B_PRESS"          event="EVID-MYNES"    msgName="TOGGLE_FLAG"/>
+
+			<Listener groupName="BUTTON_C_PRESS"     event="EVID-SCR" msgName="PUSH_ROW"/>
+			<Listener groupName="BUTTON_C_OOB_PRESS" event="EVID-SCR" msgName="PUSH_ROW"/>
+		</SquarsorEvent>
+		<!--ShowTextEvent evId="EVID-ST-SQ2" token="%%" duration="2000">
+			<Line>SQUARSOR 2 %%im%% %%iv%%</Line>
+		</ShowTextEvent-->
+		<PressEvent evId="EVID-PRESS2" aniName="TILEANI:PRESSED" areaY="4" areaH="12">
+			<Listener groupName="RELEASE"          event="EVID-MYNES" msgName="UNCOVER"/>
+			<!--Listener groupName="RELEASE"          event="EVID-ST-RELEASE2" msg="2222"/-->
+		</PressEvent>
+		<!--ShowTextEvent evId="EVID-ST-RELEASE2" token="%%" duration="2000">
+			<Line>RELEASE 2 %%im%% %%iv%%</Line>
+		</ShowTextEvent-->
+
+		<RandomEvent evId="EVID-RAN" from="0" to="99">
+			<Filter>
+				<Input msgName="GENERATE_ADD" valueMult="5" valueAdd="0"/>
+			</Filter>
+			<!--Listener groupName="RANDOM" event="EVID-LOG-CUR-RAND" msg="2229222"/-->
+			<Listener groupName="RANDOM" event="EVID-SCR" msgName="SET_NEW_ROW_GEN"/>
+		</RandomEvent>
+		<!--LogEvent evId="EVID-LOG-CUR-RAND" toStdOut="true" tag="9992999"/-->
+
+		<FillerEvent evId="EVID-FILLER" totTiles="20" start="0" priority="10">
+			<Rect y="4" h="13"/>
+			<RandomTile prob="30" charName="MINE"/>
+			<RandomTile prob="5" char="R" colorName="blue"/>
+			<RandomTile prob="5" char="N" colorName="blue"/>
+			<RandomTile prob="5" char="X" colorName="darkgreen"/>
+		</FillerEvent>
+
+		<ScrollerEvent evId="EVID-SCR" publish="true" start="17" repeat="10000000" step="7"
+						slices="64" keepTopVisible="false">
+			<Filter>
+				<Input msgName="SET_NEW_ROW_GEN" valueDiv="10"/>
+				<Input msgName="PUSH_ROW"  newValue="1"/>
+			</Filter>
+			<NewRows>
+				<RandomTiles>
+					<Random prob="100" charName="MINE"/>
+					<Random prob="5" char="N" colorName="blue"/>
+					<Random prob="5" char="R" colorName="blue"/>
+					<Random prob="20" char="X" colorName="darkgreen"/>
+					<_Ign_Random prob="50"/>
+				</RandomTiles>
+				<RandomTiles>
+					<Random prob="150" charName="MINE"/>
+					<Random prob="10" char="N" colorName="blue"/>
+					<Random prob="10" char="R" colorName="blue"/>
+					<Random prob="20" char="X" colorName="darkgreen"/>
+					<_Ign_Random prob="50"/>
+				</RandomTiles>
+				<RandomTiles>
+					<Random prob="190" charName="MINE"/>
+					<Random prob="10" char="N" colorName="blue"/>
+					<Random prob="10" char="R" colorName="blue"/>
+					<Random prob="20" char="X" colorName="darkgreen"/>
+					<_Ign_Random prob="50"/>
+				</RandomTiles>
+				<Tiles>
+					<DefaultTile />
+					<Tile idChar="S" char="S" colorName="blue"/>
+				</Tiles>
+				<NewRow>
+                    <Rand leaveEmpty="14" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="14" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="13" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="13" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="12" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="12" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="11" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="11" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="0"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="0"/>
+				</NewRow>
+
+				<NewRow>
+                    <Rand leaveEmpty="13" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="13" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="12" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="12" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="11" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="11" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="9" randomId="1"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="9" randomId="1"/>
+				</NewRow>
+
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="12" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="11" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="10" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="9" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="9" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="8" randomId="2"/>
+				</NewRow>
+				<NewRow>
+                    <Rand leaveEmpty="8" randomId="2"/>
+				</NewRow>
+			</NewRows>
+			<!--Listener groupName="PUSHED" event="EVID-LOG-CUR-ROW" msg="3339333"/-->
+			<Listener groupName="PUSHED" event="EVID-VAR-SPEED" msgName="VAR_GET_VALUE"/>
+		</ScrollerEvent>
+		<!--LogEvent evId="EVID-LOG-CUR-ROW" toStdOut="true" tag="9993999"/-->
+
+		<_Ign_ShowTextEvent evId="EVID-STRows" token="%%" duration="15000" start="10">
+			<Line>Input %%im%% %%iv%% %%vpoints%%</Line>
+		</_Ign_ShowTextEvent>
+
+		<SysEvent evId="EVID-END" team="0" start="1000080" type="LEVEL_COMPLETED" createTexts="true">
+			<!--Listener groupName="GAME_OVER" event="EVID-T" msgName="ALARMS_FINISH"/-->
+		</SysEvent>
+	</Events>
+</Game>

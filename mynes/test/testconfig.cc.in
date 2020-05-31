@@ -1,0 +1,59 @@
+/*
+ * Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, see <http://www.gnu.org/licenses/>
+ */
+/*
+ * File:   testconfig.cc
+ */
+
+#include "testconfig.h"
+#include <stmm-games/util/util.h>
+
+namespace stmg
+{
+
+namespace testing
+{
+
+namespace config
+{
+
+const std::string& getTestBinaryDir()
+{
+	static std::string s_sTestBinaryDir = "@STMMI_TESTING_BINARY_DIR@";
+	return s_sTestBinaryDir;
+}
+
+std::vector<std::string> getTestGamesFilePaths()
+{
+	static std::string s_sFilePaths = "@STMMI_TESTING_GAME_FILES_PATHS@";
+	std::vector<std::string> aLines;
+	Util::strTextToLines(s_sFilePaths, aLines);
+	return aLines;
+}
+std::vector<std::string> getTestThemesFilePaths()
+{
+	static std::string s_sFilePaths = "@STMMI_TESTING_THEME_FILES_PATHS@";
+	std::vector<std::string> aLines;
+	Util::strTextToLines(s_sFilePaths, aLines);
+	return aLines;
+}
+
+} // namespace config
+
+} // namespace testing
+
+} // namespace stmg
+

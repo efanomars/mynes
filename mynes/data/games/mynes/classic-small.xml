@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+<!--
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, see <http://www.gnu.org/licenses/>
+-->
+<Game _ign_version="1" internalName="Classic-Small" initialInterval="40" additionalHighscoresWait="500"
+			difficulty="0">
+	<Description>Small 9 by 9 board with 11 bombs</Description>
+	<Author name="Steafno Marsili"  email="stemars@gmx.ch" website="https://efanomars.com"/>
+	<Constraints levels="1" teams="1" matesPerTeamMax="1"/>
+	<Variables>
+		<Var name="Time" owner="GAME" initial="0" addTime="true" timeBase="SEC"/>
+		<Var name="Spotted" owner="TEAM" initial="0"/>
+		<!--Var name="Missed" owner="TEAM" initial="0"/-->
+		<Var name="Covered" owner="TEAM" initial="0"/>
+		<Var name="Flags" owner="TEAM" initial="0"/>
+
+		<Var name="ABInverted" owner="GAME" initial="0"/>
+		<Var name="FillOnce" owner="TEAM" initial="0"/>
+	</Variables>
+	<HighscoresDefinition maxScores="20">
+		<Element description="Mines"  varName="Spotted"/>
+		<Element description="Time"  varName="Time" lowestBest="true"/>
+		<Eligibility varName="Spotted" min="1"/>
+	</HighscoresDefinition>
+	<Level>
+		<Board width="9" height="9">
+		</Board>
+	</Level>
+	<Layout>
+		<BackgroundWidget image="Background1" alignHoriz="FILL" alignVert="FILL" expandHoriz="true" expandVert="true">
+			<BoxWidget vertical_0="true" vertical_1="false" _ign_switchable="true">
+				<BoxWidget vertical="false" vertical_1="true" expandHoriz="true" alignHoriz="FILL">
+					<TransparentWidget refWFactor="0.14" refHFactor="0.08"/>
+					<VarWidget title="Time" titleBesideValue="true" titleFactor="45%"          variable="Time"
+								expandHoriz="true" alignHoriz="START"
+								refWFactor="0.33" refHFactor="0.08" valueDigits="4"/>
+					<TransparentWidget refWFactor="0.09" refHFactor="0.08"/>
+					<BoxWidget vertical="false" expandHoriz="true" alignHoriz="FILL">
+						<VarWidget title=""     titleBesideValue="true" titleFactor="60%" team="0" variable="Flags"
+									refWFactor="0.08" refHFactor="0.08" valueDigits="2"/>
+						<VarWidget title="/"    titleBesideValue="true" titleFactor="30%" team="0" variable="Covered"
+									refWFactor="0.12" refHFactor="0.08" valueDigits="2"/>
+					</BoxWidget>
+					<TransparentWidget refWFactor="0.14" refHFactor="0.08"/>
+				</BoxWidget>
+				<TransparentWidget refWFactor="0.04" refHFactor="0.04"/>
+				<BoxWidget vertical="false" vertical_1="true" _ign_switchable="true">
+					<BoxWidget vertical="false" _ign_switchable="false">
+						<ExistIf>
+							<Option name="TouchMode" value="true"/>
+						</ExistIf>
+						<VolatileWidget variable="ABInverted">
+							<SelectImg>
+								<Case value="0" imgId="DangerBackg"/>
+							</SelectImg>
+							<ActionWidget _ign_icon="IconRedFlag" refWFactor="0.1" refHFactor="1.0"
+											event="EVID-VAR-ABINVERTED" msgName="NEG_ADD_VALUE"/>
+						</VolatileWidget>
+						<TransparentWidget refWFactor="0.03" refHFactor="1.0"/>
+					</BoxWidget>
+					<LevelShowWidget/>
+					<BoxWidget vertical="false" _ign_switchable="false">
+						<ExistIf>
+							<Option name="TouchMode" value="true"/>
+						</ExistIf>
+						<TransparentWidget refWFactor="0.03" refHFactor="1.0"/>
+						<VolatileWidget variable="ABInverted">
+							<SelectImg>
+								<Case value="0" imgId="DangerBackg"/>
+							</SelectImg>
+							<ActionWidget _ign_icon="IconRedFlag" refWFactor="0.1" refHFactor="1.0"
+											event="EVID-VAR-ABINVERTED" msgName="NEG_ADD_VALUE"/>
+						</VolatileWidget>
+					</BoxWidget>
+				</BoxWidget>
+			</BoxWidget>
+		</BackgroundWidget>
+	</Layout>
+	<Events>
+		<SysEvent evId="EVID-END" team="0" start="1000080" type="LEVEL_COMPLETED" createTexts="false">
+			<Listener groupName="GAME_OVER" event="EVID-ST-OVER" msg="0"/>
+		</SysEvent>
+
+		<ShowTextEvent evId="EVID-ST-OVER" token="%%" duration="3000" type="Faded" fontSizeInTiles="2.5">
+			<Line>Game Over</Line>
+		</ShowTextEvent>
+
+		<VariableEvent evId="EVID-VAR-SPOTTED" name="Spotted" team="0">
+			<!--Listener groupName="VAR_CHANGED" event="EVID-LOG-SPOTTED" msg="777"/-->
+		</VariableEvent>
+		<!--LogEvent evId="EVID-LOG-SPOTTED" tag="123456"/-->
+		<VariableEvent evId="EVID-VAR-COVERED" name="Covered" team="0">
+			<Listener groupName="VAR_CHANGED" event="EVID-CC-FINITO" msgName="CUMUL_SET_RIGHT_COMPARE"/>
+		</VariableEvent>
+		<!--LogEvent evId="EVID-LOG-COVERED" tag="123456"/-->
+		<SelectEvent evId="EVID-SELECT-FAILED">
+			<!-- If input is -1 means a mine was uncovered, game is over
+				increment total to original number of mines -->
+			<Filter>
+				<Input valueAdd="1"/>
+			</Filter>
+			<Listener group="0" event="EVID-VAR-COVERED" msgName="RESET"/>
+		</SelectEvent>
+
+		<VariableEvent evId="EVID-VAR-FLAGS" name="Flags" team="0">
+		</VariableEvent>
+
+		<FillerEvent evId="EVID-FILLER" totTiles="11" _ign_start="1" mode="OVER" priority="10">
+			<Select>
+				<Char fromChar="0" toChar="8"/>
+			</Select>
+			<RandomTile prob="10" charName="MINE"/>
+		</FillerEvent>
+
+		<FillerEvent evId="EVID-FILLER-COUNT" availablePositionsFactor="1.0" totTiles="0" mode="IGNORE" priority="-100">
+			<Select>
+				<Font fontNames="MYNES-FLAG-NONE,MYNES-FLAG,MYNES-FLAG-MAYBE"/>
+			</Select>
+			<RandomTile prob="10" charName="MINE"/>
+			<Listener groupName="FILLED" event="EVID-CC-FINITO" msgName="CUMUL_SET_LEFT_COMPARE"/>
+			<!--Listener groupName="FILLED" event="EVID-LOG-FILLED" msg="888"/-->
+		</FillerEvent>
+		<!--LogEvent evId="EVID-LOG-FILLED" tag="112233"/-->
+
+		<CumulCmpEvent evId="EVID-CC-FINITO" onCompare="UNCHANGED">
+			<Listener groupName="COMPARED_EQUAL" event="EVID-VAR-SPOTTED" msgName="SET_VALUE"/>
+			<Listener groupName="COMPARED_EQUAL" event="EVID-MYNES"       msgName="FINISH_SHOW_MINES"/>
+			<!--Listener groupName="COMPARED_EQUAL" event="EVID-LOG-FINITO" msg="999"/-->
+		</CumulCmpEvent>
+		<!--LogEvent evId="EVID-LOG-FINITO" tag="445566"/-->
+
+		<MynesEvent evId="EVID-MYNES" start="0">
+			<Listener groupName="UNCOVERED_FLAGGED_MINE"     event="EVID-VAR-SPOTTED" msgName="INC"/>
+			<Listener groupName="UNCOVERED_FLAGGED_MINE"     event="EVID-VAR-FLAGS"   msgName="DEC"/>
+			<Listener groupName="UNCOVERED_UNFLAGGED_MINE"   event="EVID-MYNES"       msgName="FINISH_UNCOVER"/>
+			<Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-VAR-SPOTTED" msgName="DEC"/>
+			<!--Listener groupName="UNCOVERED_FLAGGED_NON_MINE" event="EVID-LOG-UUM"   msg="5551555"/-->
+			<Listener groupName="ADD_FLAG"                   event="EVID-VAR-FLAGS"   msgName="INC"/>
+			<Listener groupName="REMOVE_FLAG"                event="EVID-VAR-FLAGS"   msgName="DEC"/>
+			<!--Listener groupName="REMOVE_FLAG"                event="EVID-ST-REMOVE"   msg="123"/-->
+			<Listener groupName="COVERED_MINES_ADDED"        event="EVID-VAR-COVERED" msgName="ADD_VALUE"/>
+			<Listener groupName="COVERED_MINES_ADDED"        event="EVID-SELECT-FAILED" msg="0"/>
+			<Listener groupName="UNCOVERED_UNFLAGGED_MINE"   event="EVID-DQ-EXPLODE" msgName="QUEUE_VALUE">
+				<ExistIf>
+					<Option name="SoundEnabled" team="" value="true"/>
+				</ExistIf>
+			</Listener>
+			<Listener groupName="FINISHED"                   event="EVID-END"         msg="0"/>
+		</MynesEvent>
+		<!--LogEvent evId="EVID-LOG-UUM" tag="5552555" valueAsXY="true"/-->
+
+		<DelayedQueueEvent evId="EVID-DQ-EXPLODE" intervalMillisecs="110">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+			<Listener groupName="VALUE" event="EVID-SND-EXPLOSION"   msgName="PLAY_FREE"/>
+			<!--Listener groupName="VALUE" event="EVID-LOG-EXPLODE"   msg="9991"/-->
+		</DelayedQueueEvent>
+		<SoundEvent evId="EVID-SND-EXPLOSION" name="Explosion" listenerRealtive="true" volume="50">
+			<ExistIf>
+				<Option name="SoundEnabled" team="" value="true"/>
+			</ExistIf>
+		</SoundEvent>
+		<!--LogEvent evId="EVID-LOG-EXPLODE" valueAsXY="true" tag="363636"/-->
+
+		<VariableEvent evId="EVID-VAR-ABINVERTED" name="ABInverted" publish="true" >
+			<ExistIf>
+				<Option name="TouchMode" ownerType="GAME" value="true"/>
+			</ExistIf>
+			<Filter>
+				<Input msgName="NEG_ADD_VALUE" newValue="1"/>
+			</Filter>
+			<Listener groupName="VAR_CHANGED" event="EVID-SQUARSOR" msgName="INVERT_POINTER_AB_TOGGLE"/>
+		</VariableEvent>
+
+		<SquarsorEvent evId="EVID-SQUARSOR" start="2">
+			<Listener groupName="BUTTON_A_PRESS"          event="EVID-PRESS" msgName="BUTTON_PRESS"/>
+			<!--Listener groupName="BUTTON_A_PRESS"          event="EVID-SONAR" msgName="ACTIVATE_SONAR_AT"/-->
+			<Listener groupName="BUTTON_A_RELEASE"        event="EVID-PRESS" msgName="BUTTON_RELEASE"/>
+			<Listener groupName="BUTTON_A_RELEASE_CANCEL" event="EVID-PRESS" msgName="BUTTON_RELEASE_CANCEL"/>
+			<Listener groupName="BUTTON_A_MOVE"           event="EVID-PRESS" msgName="BUTTON_MOVE"/>
+			<Listener groupName="BUTTON_B_PRESS"          event="EVID-MYNES" msgName="TOGGLE_FLAG"/>
+		</SquarsorEvent>
+		<PressEvent evId="EVID-PRESS" aniName="TILEANI:PRESSED">
+			<Listener groupName="RELEASE"   event="EVID-VAR-ONCE"     msgName="INC"/>
+			<Listener groupName="RELEASE"   event="EVID-SELECT-ONCE"  msg="0"/>
+			<Listener groupName="RELEASE"   event="EVID-MYNES"        msgName="UNCOVER"/>
+			<Listener groupName="RELEASE"   event="EVID-FILLER-COUNT" msgName="FILL"/>
+		</PressEvent>
+
+		<VariableEvent evId="EVID-VAR-ONCE" name="FillOnce" team="0">
+		</VariableEvent>
+
+		<SelectEvent evId="EVID-SELECT-ONCE" varName="FillOnce">
+			<Listener group="1" event="EVID-FILLER" msgName="FILL_BUT_POS"/>
+		</SelectEvent>
+
+	</Events>
+</Game>
