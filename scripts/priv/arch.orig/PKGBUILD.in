@@ -8,7 +8,10 @@ url='@STMMI_WEBSITE_SECTION@/@STMMI_SOURCE_PROJECT@'
 arch=('x86_64')
 license=('GPL3')
 
-depends=('stmm-games' 'stmm-input' 'gtkmm3')
+depends=(
+    'stmm-games>=@MYNES_REQ_STMM_GAMES_XML_GTK_VERSION@'
+    'stmm-input>=@MYNES_REQ_STMM_INPUT_GTK_DM_VERSION@'
+    'gtkmm3')
 makedepends=('cmake' 'gcc' 'doxygen' 'graphviz' 'python')
 optdepends=()
 
