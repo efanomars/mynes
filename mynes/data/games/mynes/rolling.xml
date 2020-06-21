@@ -198,7 +198,14 @@
 						</VolatileWidget>
 					</BoxWidget>
 				</BoxWidget>
-				<TransparentWidget refHFactor="0.03" refWFactor="1.0"/>
+				<TransparentWidget refHFactor="0.03" refWFactor="1.0">
+					<ExistIf>
+						<Or>
+							<Option name="TouchMode" value="true"/>
+							<Option name="KeysMode" value="false"/>
+						</Or>
+					</ExistIf>
+				</TransparentWidget>
 				<ActionWidget text="PUSH" _ign_textHeight="1.5" expandHoriz="true" alignHoriz="FILL" _ign_icon="IconDown"
 								refWFactor="0.5" refHFactor="0.15" event="EVID-SCR" msgName="PUSH_ROW">
 					<ExistIf>

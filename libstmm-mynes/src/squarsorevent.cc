@@ -35,6 +35,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <cmath>
+#include <stmm-input-ev/touchevent.h>
 
 namespace stmg
 {
@@ -61,6 +62,8 @@ static const int32_t s_nInvalidXY = Util::packPointToInt32(NPoint{-1000,-1000});
 
 static constexpr const int32_t s_nKeysBufferSize = 10;
 
+static constexpr const int32_t s_nVisibleShape = 0;
+static constexpr const int32_t s_nInvisibleShape = 1;
 
 SquarsorEvent::SquarsorEvent(Init&& oInit) noexcept
 : Event(std::move(oInit))
@@ -110,17 +113,16 @@ void SquarsorEvent::commonInit() noexcept
 	m_nKeyActionButtonB = refAppConfig->getKeyActionId(s_sKeyActionButtonB);
 	m_nKeyActionButtonC = refAppConfig->getKeyActionId(s_sKeyActionButtonC);
 	m_nKeyActionNext = refAppConfig->getKeyActionId(s_sKeyActionNext);
-	#ifndef NDEBUG
-	m_nDebugLastTimerMove = -1;
-	#endif
 
 	m_eState= SQUARSOR_EVENT_STATE_ACTIVATE;
 	m_nTickStarted = -1;
-	m_bPointerMode = false;
+//	m_bPointerMode = false;
+	m_eInputMode = SQUARSOR_INPUT_MODE_KEYS;
 	m_nTotPressedButtons = 0;
 	m_aButtonPressed.fill(false);
-	m_fMouseShowXRel = -1.0;
-	m_fMouseShowYRel = -1.0;
+	m_nMainPressedFinger = -1;
+	m_fXYInputShowXRel = -1.0;
+	m_fXYInputShowYRel = -1.0;
 	m_nHoverXY = s_nInvalidXY;
 	m_nLastLevelPlayer = -1;
 	m_bMoveOnKeyRelease = false;
@@ -250,10 +252,14 @@ void SquarsorEvent::onScrolled(Direction::VALUE eDir) noexcept
 		blockMove(nDeltaX, nDeltaY);
 		return; //--------------------------------------------------------------
 	}
-	if (m_bPointerMode) {
+	if (m_eInputMode != SQUARSOR_INPUT_MODE_KEYS) {
 		if (m_nTotPressedButtons > 0) {
+			if (m_eInputMode == SQUARSOR_INPUT_MODE_POINTER) {
 //std::cout << "SquarsorEvent::onScrolled eDir= " << ((eDir == Direction::UP) ? "UP" : "DOWN") << '\n';
-			handlePointerInput(stmi::PointerEvent::POINTER_MOVE, m_fMouseShowXRel, m_fMouseShowYRel, -1, true);
+				handlePointerInput(stmi::PointerEvent::POINTER_MOVE, m_fXYInputShowXRel, m_fXYInputShowYRel, -1, true);
+			} else {
+				handleTouchInput(stmi::TouchEvent::TOUCH_UPDATE, m_fXYInputShowXRel, m_fXYInputShowYRel, m_nMainPressedFinger, true);
+			}
 		}
 	} else {
 		const NPoint oPos = LevelBlock::blockPos();
@@ -266,31 +272,43 @@ void SquarsorEvent::handleTimer() noexcept
 {
 //std::cout << "SquarsorEvent(" << getId() << ")::handleTimer(" << level().game().gameElapsed() << ")"<< '\n';
 	const bool bKeysPresent = ! m_oKeys.isEmpty();
-	if (bKeysPresent && m_bPointerMode) {
+	const bool bKeysInputMode = (m_eInputMode == SQUARSOR_INPUT_MODE_KEYS);
+	if (bKeysPresent && (! bKeysInputMode)) {
 		if (m_nTotPressedButtons > 0) {
-			// can't switch to key mode while pointer buttons still pressed
+			// can't switch to key mode while pointer buttons or touch fingers still pressed
 		} else {
-			m_bPointerMode = false;
+			m_eInputMode = SQUARSOR_INPUT_MODE_KEYS;
 //std::cout << "SquarsorEvent::handleTimer() to key mode" << '\n';
-			// move to visible shape
-			blockMoveRotate(0, 0, 0);
+			// show visible square
+			blockMoveRotate(s_nVisibleShape, 0, 0);
 		}
 	}
-	if (m_bPointerMode) {
+	if (bKeysInputMode) {
+		if (bKeysPresent) {
+			do {
+				const BufKey oBufKey = m_oKeys.read();
+				// if not in key mode just flush the buffer
+				const int32_t nKeyAction = oBufKey.m_nKeyActionId;
+				const stmi::Event::AS_KEY_INPUT_TYPE eType = oBufKey.m_eInputType;
+				doKeyAction(nKeyAction, eType);
+			} while (! m_oKeys.isEmpty());
+		}
+	} else {
 		// flush keys
 		m_oKeys.clear();
-		// a pointer motion is going on
-		// check whether the scrolling board has brought the perfectly still (not generating POINTER_MOVE)
-		// pointer into another cell
-		handlePointerInput(stmi::PointerEvent::POINTER_MOVE, m_fMouseShowXRel, m_fMouseShowYRel, -1, false);
-	} else if (bKeysPresent) {
-		do {
-			const BufKey oBufKey = m_oKeys.read();
-			// if not in key mode just flush the buffer
-			const int32_t nKeyAction = oBufKey.m_nKeyActionId;
-			const stmi::Event::AS_KEY_INPUT_TYPE eType = oBufKey.m_eInputType;
-			doKeyAction(nKeyAction, eType);
-		} while (! m_oKeys.isEmpty());
+		if (m_nTotPressedButtons > 0) {
+			if (m_eInputMode == SQUARSOR_INPUT_MODE_POINTER) {
+				// check whether the scrolling board has brought the perfectly still (not generating POINTER_MOVE)
+				// pointer into another cell
+				handlePointerInput(stmi::PointerEvent::POINTER_MOVE, m_fXYInputShowXRel, m_fXYInputShowYRel, -1, false);
+			} else if (m_eInputMode == SQUARSOR_INPUT_MODE_TOUCH) {
+				// check whether the scrolling board has brought the perfectly still (not generating TOUCH_MOVE)
+				// finger into another cell
+				handleTouchInput(stmi::TouchEvent::TOUCH_UPDATE, m_fXYInputShowXRel, m_fXYInputShowYRel, m_nMainPressedFinger, false);
+			} else {
+				assert(false);
+			}
+		}
 	}
 }
 void SquarsorEvent::handleKeyActionInput(const shared_ptr<KeyActionEvent>& refEvent) noexcept
@@ -316,26 +334,50 @@ void SquarsorEvent::handleInput(const shared_ptr<stmi::Event>& refEvent) noexcep
 {
 //std::cout << "SquarsorEvent::handleInput" << '\n';
 	const stmi::Event::Class& oClass = refEvent->getEventClass();
-	if (oClass.isXYEvent()) {
-		const std::type_info& oType = oClass.getTypeInfo();
-		if (oType == typeid(stmi::PointerEvent)) {
-			if (! m_bPointerMode) {
-				if (m_nTotPressedButtons > 0) {
-					// can't switch to pointer mode while keys still pressed
-					return; //--------------------------------------------------
-				}
-				m_bPointerMode = true;
-//std::cout << "SquarsorEvent::handleTimer() to pointer mode" << '\n';
-				// show hidden shape
-				blockMoveRotate(1, 0, 0);
-			} else {
-				if (m_nTotPressedButtons == 0) {
-					m_bCurInvertPointerButtonsAB = m_bNextInvertPointerButtonsAB;
-				}
+	if (! oClass.isXYEvent()) {
+		return; //--------------------------------------------------------------
+	}
+	const std::type_info& oType = oClass.getTypeInfo();
+	if (oType == typeid(stmi::PointerEvent)) {
+		if (m_eInputMode != SQUARSOR_INPUT_MODE_POINTER) {
+			if ((m_eInputMode == SQUARSOR_INPUT_MODE_TOUCH) && (m_nTotPressedButtons > 0)) {
+				// can't switch to pointer mode while fingers still pressed
+				return; //--------------------------------------------------
+			} else if ((m_eInputMode == SQUARSOR_INPUT_MODE_KEYS) && (! m_oKeys.isEmpty())) {
+				// can't switch to pointer mode while keys still pressed
+				return; //--------------------------------------------------
 			}
-			stmi::PointerEvent* p0PointerEvent = static_cast<stmi::PointerEvent*>(refEvent.get());
-			handlePointerInput(p0PointerEvent->getType(), p0PointerEvent->getX(), p0PointerEvent->getY(), p0PointerEvent->getButton(), false);
+			m_eInputMode = SQUARSOR_INPUT_MODE_POINTER;
+//std::cout << "SquarsorEvent::handleTimer() to pointer mode" << '\n';
+			// show hidden shape
+			blockMoveRotate(s_nInvisibleShape, 0, 0);
+		} else {
+			if (m_nTotPressedButtons == 0) {
+				m_bCurInvertPointerButtonsAB = m_bNextInvertPointerButtonsAB;
+			}
 		}
+		stmi::PointerEvent* p0PointerEvent = static_cast<stmi::PointerEvent*>(refEvent.get());
+		handlePointerInput(p0PointerEvent->getType(), p0PointerEvent->getX(), p0PointerEvent->getY(), p0PointerEvent->getButton(), false);
+	} else if (oType == typeid(stmi::TouchEvent)) {
+		if (m_eInputMode != SQUARSOR_INPUT_MODE_TOUCH) {
+			if (m_nTotPressedButtons > 0) {
+				// can't switch to touch mode while keys or fingers still pressed
+				return; //------------------------------------------------------
+			} else if ((m_eInputMode == SQUARSOR_INPUT_MODE_KEYS) && (! m_oKeys.isEmpty())) {
+				// can't switch to touch mode while keys still in the buffer
+				return; //------------------------------------------------------
+			}
+			m_eInputMode = SQUARSOR_INPUT_MODE_TOUCH;
+//std::cout << "SquarsorEvent::handleTimer() to pointer mode" << '\n';
+			// show hidden shape
+			blockMoveRotate(s_nInvisibleShape, 0, 0);
+		} else {
+			if (m_nTotPressedButtons == 0) {
+				m_bCurInvertPointerButtonsAB = m_bNextInvertPointerButtonsAB;
+			}
+		}
+		stmi::TouchEvent* p0TouchEvent = static_cast<stmi::TouchEvent*>(refEvent.get());
+		handleTouchInput(p0TouchEvent->getType(), p0TouchEvent->getX(), p0TouchEvent->getY(), p0TouchEvent->getFingerId(), false);
 	}
 }
 int32_t SquarsorEvent::getMsgFromPointerButton(int32_t nButton, int32_t nType) const noexcept
@@ -354,7 +396,7 @@ int32_t SquarsorEvent::getMsgFromKeyButton(int32_t nButton, int32_t nType) const
 }
 int32_t SquarsorEvent::getMsgFromButton(int32_t nButton, int32_t nType) const noexcept
 {
-	if (m_bPointerMode) {
+	if (m_eInputMode != SQUARSOR_INPUT_MODE_KEYS) {
 		return getMsgFromPointerButton(nButton, nType);
 	} else {
 		return getMsgFromKeyButton(nButton, nType);
@@ -390,7 +432,7 @@ void SquarsorEvent::handlePointerInput(stmi::PointerEvent::POINTER_INPUT_TYPE eT
 	const int32_t nNewX = oBoardNew.m_fX;
 	const int32_t nNewY = oBoardNew.m_fY;
 	const int32_t nOldValue = Util::packPointToInt32(NPoint{nPosX, nPosY});
-	const bool bButton = ((nButton >= 1) && (nButton <= s_nTotButtons));
+	const bool bButton = ((nButton >= 1) && (nButton <= s_nMaxButtons));
 
 	if (bReleaseCancel || !m_oData.m_oArea.containsPoint(NPoint{nNewX, nNewY})) {
 		if (bRelease || bReleaseCancel) {
@@ -407,14 +449,14 @@ void SquarsorEvent::handlePointerInput(stmi::PointerEvent::POINTER_INPUT_TYPE eT
 	}
 	// the new position is valid
 	// store show/subshow area relative coords
-	m_fMouseShowXRel = fNewX;
-	m_fMouseShowYRel = fNewY;
+	m_fXYInputShowXRel = fNewX;
+	m_fXYInputShowYRel = fNewY;
 	const int32_t nNewValue = Util::packPointToInt32(NPoint{nNewX, nNewY});
 	const int32_t nDx = nNewX - nPosX;
 	const int32_t nDy = nNewY - nPosY;
 	if (bPointerMove) {
 		bool bHover = true;
-		for (int32_t nCurB = 1; nCurB <= s_nTotButtons; ++nCurB) {
+		for (int32_t nCurB = 1; nCurB <= s_nMaxButtons; ++nCurB) {
 			if (m_aButtonPressed[nCurB - 1]) {
 				bHover = false;
 				break;
@@ -429,7 +471,7 @@ void SquarsorEvent::handlePointerInput(stmi::PointerEvent::POINTER_INPUT_TYPE eT
 			}
 			if (bInformMove) {
 				// Beware! if both buttons are pressed two move messages are emitted!
-				for (int32_t nCurB = 1; nCurB <= s_nTotButtons; ++nCurB) {
+				for (int32_t nCurB = 1; nCurB <= s_nMaxButtons; ++nCurB) {
 					if (m_aButtonPressed[nCurB - 1]) {
 						informListeners(getMsgFromPointerButton(nCurB, s_nGroupRelButtonMove), nNewValue);
 					}
@@ -474,6 +516,106 @@ void SquarsorEvent::handlePointerInput(stmi::PointerEvent::POINTER_INPUT_TYPE eT
 		}
 	}
 }
+void SquarsorEvent::handleTouchInput(stmi::TouchEvent::TOUCH_INPUT_TYPE eType, double fNewX, double fNewY
+										, int64_t nFingerId, bool bInformMove) noexcept
+{
+	if (m_nTotPressedButtons > 0) {
+		if (nFingerId != m_nMainPressedFinger) {
+			// only one active finger is tracked
+			return; //----------------------------------------------------------
+		}
+	}
+	const NPoint oPos = LevelBlock::blockPos();
+	const int32_t nPosX = oPos.m_nX;
+	const int32_t nPosY = oPos.m_nY;
+	const bool bPress = (eType == stmi::TouchEvent::TOUCH_BEGIN);
+	const bool bRelease = (eType == stmi::TouchEvent::TOUCH_END);
+	const bool bReleaseCancel = (eType == stmi::TouchEvent::TOUCH_CANCEL);
+	const bool bTouchMove = (eType == stmi::TouchEvent::TOUCH_UPDATE);
+	// get LevelShow relative coords
+	Level& oLevel = level();
+	const bool bSubshowMode = oLevel.subshowMode();
+	if (bSubshowMode) {
+		if (m_nLastLevelPlayer < 0) {
+			return; //----------------------------------------------------------
+		}
+	}
+	LevelShow& oLevelShow = [&]() -> LevelShow&
+	{
+		if (bSubshowMode) {
+			return oLevel.subshowGet(m_nLastLevelPlayer);
+		} else {
+			return oLevel.showGet();
+		}
+	}();
+	const FPoint oBoardNew = oLevelShow.getBoardPos(fNewX, fNewY);
+	const int32_t nNewX = oBoardNew.m_fX;
+	const int32_t nNewY = oBoardNew.m_fY;
+	const int32_t nOldValue = Util::packPointToInt32(NPoint{nPosX, nPosY});
+	const int32_t nButton = 1;
+
+	if (bReleaseCancel || ! m_oData.m_oArea.containsPoint(NPoint{nNewX, nNewY})) {
+		if (bRelease || bReleaseCancel) {
+			// send the last valid position with the cancel
+			if (m_aButtonPressed[nButton - 1]) {
+				m_aButtonPressed[nButton - 1] = false;
+				--m_nTotPressedButtons;
+				informListeners(getMsgFromPointerButton(nButton, s_nGroupRelButtonReleaseCancel), nOldValue);
+			}
+		} else if (bPress) {
+			informListeners(getMsgFromPointerButton(nButton, s_nGroupRelButtonOOBPress), nOldValue);
+		}
+		return; //--------------------------------------------------------------
+	}
+	// the new position is valid
+	// store show/subshow area relative coords
+	m_fXYInputShowXRel = fNewX;
+	m_fXYInputShowYRel = fNewY;
+	const int32_t nNewValue = Util::packPointToInt32(NPoint{nNewX, nNewY});
+	const int32_t nDx = nNewX - nPosX;
+	const int32_t nDy = nNewY - nPosY;
+	if (bTouchMove) {
+		if (nNewValue != nOldValue) {
+//std::cout << "SquarsorEvent::handleTouchInput bPointerMove nNewX = " << nNewX << "   nNewY=" << nNewY << '\n';
+//std::cout << "                                               nDx = " << nDx << "   nDy=" << nDy << '\n';
+			blockMove(nDx, nDy);
+			bInformMove = true;
+		}
+		if (bInformMove) {
+			if (m_aButtonPressed[nButton - 1]) {
+				informListeners(getMsgFromPointerButton(nButton, s_nGroupRelButtonMove), nNewValue);
+			}
+//std::cout << "SquarsorEvent::handleTouchInput AFTER bPointerMove nNewX = " << nNewX << "   nNewY=" << nNewY << '\n';
+		}
+	} else {
+		if (bPress) {
+			if (m_aButtonPressed[nButton - 1]) {
+				// if key press or an orphan (of release) mouse press, cancel
+				informListeners(getMsgFromPointerButton(nButton, s_nGroupRelButtonReleaseCancel), nOldValue);
+			} else {
+				m_aButtonPressed[nButton - 1] = true;
+				++m_nTotPressedButtons;
+				assert(m_nTotPressedButtons == 1);
+			}
+			m_nMainPressedFinger = nFingerId;
+			if (nNewValue != nOldValue) {
+				blockMove(nDx, nDy);
+			}
+			informListeners(getMsgFromPointerButton(nButton, s_nGroupRelButtonPress), nNewValue);
+		} else {
+			assert(bRelease);
+			if (m_aButtonPressed[nButton - 1]) {
+				m_aButtonPressed[nButton - 1] = false;
+				--m_nTotPressedButtons;
+				assert(m_nTotPressedButtons == 0);
+				if (nNewValue != nOldValue) {
+					blockMove(nDx, nDy);
+				}
+				informListeners(getMsgFromPointerButton(nButton, s_nGroupRelButtonRelease), nNewValue);
+			}
+		}
+	}
+}
 void SquarsorEvent::doMoveKeyAction(int32_t nPosX, int32_t nPosY, int32_t nDx, int32_t nDy) noexcept
 {
 	const int32_t nNewX = nPosX + nDx;
@@ -488,7 +630,7 @@ void SquarsorEvent::doMoveKeyAction(int32_t nPosX, int32_t nPosY, int32_t nDx, i
 	const bool bHover = (m_nTotPressedButtons == 0);
 	if (!bHover) {
 		// Beware! A move message is emitted for each pressed button!
-		for (int32_t nCurB = 1; nCurB <= s_nTotButtons; ++nCurB) {
+		for (int32_t nCurB = 1; nCurB <= s_nMaxButtons; ++nCurB) {
 			if (m_aButtonPressed[nCurB - 1]) {
 				informListeners(getMsgFromButton(nCurB, s_nGroupRelButtonMove), nNewValue);
 			}
@@ -574,10 +716,10 @@ void SquarsorEvent::doKeyAction(int32_t nKeyAction, KeyActionEvent::AS_KEY_INPUT
 void SquarsorEvent::onPlayerChanged() noexcept
 {
 	auto aButtonPressed = m_aButtonPressed;
-	for (int32_t nCurB = 1; nCurB <= s_nTotButtons; ++nCurB) {
+	for (int32_t nCurB = 1; nCurB <= s_nMaxButtons; ++nCurB) {
 		m_aButtonPressed[nCurB - 1] = false;
 	}
-	for (int32_t nCurB = 1; nCurB <= s_nTotButtons; ++nCurB) {
+	for (int32_t nCurB = 1; nCurB <= s_nMaxButtons; ++nCurB) {
 		if (aButtonPressed[nCurB - 1]) {
 			informListeners(getMsgFromButton(nCurB, s_nGroupRelButtonReleaseCancel), -1);
 		}

@@ -20,7 +20,6 @@
 #ifndef STMG_FILLER_EVENT_H_
 #define STMG_FILLER_EVENT_H_
 
-//#include <stmm-games/level.h>
 #include <stmm-games/event.h>
 #include <stmm-games/util/recycler.h>
 #include <stmm-games/utile/randomtiles.h>

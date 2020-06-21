@@ -30,6 +30,7 @@
 
 #include <stmm-input/stmm-input.h>
 #include <stmm-input-ev/pointerevent.h>
+#include <stmm-input-ev/touchevent.h>
 
 #include <vector>
 #include <string>
@@ -106,7 +107,7 @@ public:
 	// Outputs
 	enum {
 		// nValue: cell coordinates (packed with Util::packPointToInt32)
-		LISTENER_GROUP_BUTTON_A_PRESS = 10
+		  LISTENER_GROUP_BUTTON_A_PRESS = 10
 		, LISTENER_GROUP_BUTTON_A_RELEASE = 11
 		, LISTENER_GROUP_BUTTON_A_RELEASE_CANCEL = 12
 		, LISTENER_GROUP_BUTTON_A_MOVE = 15
@@ -143,6 +144,7 @@ protected:
 	void onPlayerChanged() noexcept override;
 
 	void handlePointerInput(stmi::PointerEvent::POINTER_INPUT_TYPE eType, double fNewX, double fNewY, int32_t nButton, bool bInformMove) noexcept;
+	void handleTouchInput(stmi::TouchEvent::TOUCH_INPUT_TYPE eType, double fNewX, double fNewY, int64_t nFingerId, bool bInformMove) noexcept;
 private:
 	//TODO pass Tile to use in the single Brick Block
 	void commonInit() noexcept;
@@ -157,10 +159,10 @@ private:
 
 	enum SQUARSOR_EVENT_STATE
 	{
-		SQUARSOR_EVENT_STATE_ACTIVATE = 0,
-		SQUARSOR_EVENT_STATE_INIT = 1,
-		SQUARSOR_EVENT_STATE_WAIT = 2,
-		SQUARSOR_EVENT_STATE_DEAD = 3
+		  SQUARSOR_EVENT_STATE_ACTIVATE = 0
+		, SQUARSOR_EVENT_STATE_INIT = 1
+		, SQUARSOR_EVENT_STATE_WAIT = 2
+		, SQUARSOR_EVENT_STATE_DEAD = 3
 	};
 private:
 	LocalInit m_oData;
@@ -179,14 +181,7 @@ private:
 	SQUARSOR_EVENT_STATE m_eState;
 	int32_t m_nTickStarted;
 
-	struct BufKey
-	{
-		int32_t m_nKeyActionId = -1;
-		stmi::Event::AS_KEY_INPUT_TYPE m_eInputType;
-	};
-	CircularBuffer<BufKey> m_oKeys;
-
-	static constexpr const int32_t s_nTotButtons = 3;
+	static constexpr const int32_t s_nMaxButtons = 3;
 	static constexpr const int32_t s_nGroupButtonFirst = 10;
 	static constexpr const int32_t s_nGroupButtonStep = 10;
 	static constexpr const int32_t s_nGroupRelButtonPress = 0;
@@ -195,16 +190,38 @@ private:
 	static constexpr const int32_t s_nGroupRelButtonMove = 5;
 	static constexpr const int32_t s_nGroupRelButtonOOBPress = 8;
 
-	bool m_bPointerMode; // if true in touch or mouse mode, if false in keyboard mode
+	enum SQUARSOR_INPUT_MODE
+	{
+		  SQUARSOR_INPUT_MODE_KEYS = 0
+		, SQUARSOR_INPUT_MODE_POINTER = 1
+		, SQUARSOR_INPUT_MODE_TOUCH = 2
+	};
+	SQUARSOR_INPUT_MODE m_eInputMode;
+
+	struct BufKey
+	{
+		int32_t m_nKeyActionId = -1;
+		stmi::Event::AS_KEY_INPUT_TYPE m_eInputType;
+	};
+	CircularBuffer<BufKey> m_oKeys; // SQUARSOR_INPUT_MODE_KEYS
+
+//	bool m_bPointerMode; // if true in touch or mouse mode, if false in keyboard mode
 	// switching mode is only possible if no button is pressed
 	// in pointer mode shape 1 of the squarsor block is shown,
 	// in keyboard mode shape 0 is shown
-	int32_t m_nTotPressedButtons;
-	std::array<bool, s_nTotButtons> m_aButtonPressed;
-	double m_fMouseShowXRel;
-	double m_fMouseShowYRel;
 
-	int32_t m_nHoverXY;
+	// Used by all input modes
+	std::array<bool, s_nMaxButtons> m_aButtonPressed;
+	int32_t m_nTotPressedButtons; // in SQUARSOR_INPUT_MODE_TOUCH this can only be 0 or 1
+
+	int32_t m_nHoverXY; // SQUARSOR_INPUT_MODE_POINTER, packed
+
+	int64_t m_nMainPressedFinger; // SQUARSOR_INPUT_MODE_TOUCH
+
+	// Used to detect board cell change when mouse or finger are pressed
+	// but perfectly still and the show (or subshow) area is scrolling
+	double m_fXYInputShowXRel;
+	double m_fXYInputShowYRel;
 
 	int32_t m_nKeyActionLeft;
 	int32_t m_nKeyActionRight;
@@ -214,10 +231,6 @@ private:
 	int32_t m_nKeyActionButtonB;
 	int32_t m_nKeyActionButtonC;
 	int32_t m_nKeyActionNext;
-
-#ifndef NDEBUG
-	int32_t m_nDebugLastTimerMove;
-#endif
 
 private:
 	SquarsorEvent() = delete;

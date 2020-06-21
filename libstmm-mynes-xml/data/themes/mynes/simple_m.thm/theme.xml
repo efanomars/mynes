@@ -110,18 +110,15 @@
 								<Text sizeFactor="100%" _ign_text="Err"/>
 								<Stop/>
 						</Conditional>
-					<Else/>
-						<Conditional>
-							<If><Char charName="MINE"/></If>
-								<Image imgFile="cell-backg.svg"/>
-								<Image imgFile="mine.svg"/>
-							<Elsif><Char charName="MINE-BANG"/></Elsif>
-								<Image imgFile="cell-backg.svg"/>
-								<Image imgFile="mine-bang.svg"/>
-							<Elsif><Char charName="FLAG-WRONG"/></Elsif>
-								<Image imgFile="cell-backg.svg"/>
-								<Image imgFile="flag-wrong.svg"/>
-						</Conditional>
+					<Elsif><Char charName="MINE"/></Elsif>
+						<Image imgFile="cell-backg.svg"/>
+						<Image imgFile="mine.svg"/>
+					<Elsif><Char charName="MINE-BANG"/></Elsif>
+						<Image imgFile="cell-backg.svg"/>
+						<Image imgFile="mine-bang.svg"/>
+					<Elsif><Char charName="FLAG-WRONG"/></Elsif>
+						<Image imgFile="cell-backg.svg"/>
+						<Image imgFile="flag-wrong.svg"/>
 				</Conditional>
 			</Case>
 			<Default _ign_DESC="value is 1.0, Covered">

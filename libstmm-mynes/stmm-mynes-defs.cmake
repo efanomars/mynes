@@ -20,7 +20,7 @@
 #   MINOR is REVISION (implementation of interface)
 #   AGE is always 0
 set(STMM_MYNES_MAJOR_VERSION 0)
-set(STMM_MYNES_MINOR_VERSION 13) # !-U-!
+set(STMM_MYNES_MINOR_VERSION 14) # !-U-!
 set(STMM_MYNES_VERSION "${STMM_MYNES_MAJOR_VERSION}.${STMM_MYNES_MINOR_VERSION}.0")
 
 # required stmm-games version
@@ -72,14 +72,3 @@ list(APPEND STMMMYNES_LIBRARIES "${STMMMYNES_EXTRA_LIBRARIES}")
 if ("${CMAKE_SCRIPT_MODE_FILE}" STREQUAL "")
     DefineAsSecondaryTarget(stmm-mynes  ${STMMI_LIB_FILE}  "${STMMMYNES_INCLUDE_DIRS}"  "" "${STMMI_TEMP_EXTERNAL_LIBRARIES}")
 endif()
-
-# if (("${CMAKE_SCRIPT_MODE_FILE}" STREQUAL "") AND NOT TARGET stmm-mynes)
-#     if (BUILD_SHARED_LIBS)
-#         add_library(stmm-mynes SHARED IMPORTED)
-#     else()
-#         add_library(stmm-mynes STATIC IMPORTED)
-#     endif()
-#     set_target_properties(stmm-mynes PROPERTIES IMPORTED_LOCATION             "${STMMI_LIB_FILE}")
-#     set_target_properties(stmm-mynes PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${STMMMYNES_INCLUDE_DIRS}")
-#     set_target_properties(stmm-mynes PROPERTIES INTERFACE_LINK_LIBRARIES      "${STMMMYNES_EXTRA_LIBRARIES}")
-# endif()

@@ -1,3 +1,11 @@
+mynes (0.14) unstable; urgency=low
+
+  * Adapt to stmm-games API changes
+  * Possibly fix certainly broken touch input
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Mon, 22 Jun 2020 19:29:39 +0100
+
 mynes (0.13) unstable; urgency=low
 
   * Fix PKGBUILD
