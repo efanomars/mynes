@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
 -->
+<!--
+ * File:   classic-small.xml
+-->
 <Game _ign_version="1" internalName="Classic-Small" initialInterval="40" additionalHighscoresWait="500"
 			difficulty="0">
 	<Description>Small 9 by 9 board with 11 bombs</Description>

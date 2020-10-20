@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
 -->
+<!--
+ * File:   classic-medium.xml
+-->
 <Game _ign_version="1" internalName="Classic-Medium" initialInterval="40" additionalHighscoresWait="500"
 			difficulty="20">
 	<Description>Medium 16 by 16 board with 40 bombs</Description>

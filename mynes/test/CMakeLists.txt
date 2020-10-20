@@ -1,19 +1,19 @@
-# mynes: test/CMakeLists.txt
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   mynes/test/CMakeLists.txt
 
 include(CommonTesting)
 
@@ -45,8 +45,8 @@ if (BUILD_TESTING)
              "${STMMI_TEST_SOURCES_DIR}/testLoadGames.cxx"
            )
 
-    set(TEST_MYNES_REQ_STMM_GAMES_FAKE_VERSION "0.25") # !-U-!
-    set(TEST_MYNES_REQ_STMM_INPUT_FAKE_VERSION "0.14") # !-U-!
+    set(TEST_MYNES_REQ_STMM_GAMES_FAKE_VERSION "0.26") # !-U-!
+    set(TEST_MYNES_REQ_STMM_INPUT_FAKE_VERSION "0.15") # !-U-!
 
     include(FindPkgConfig)
     if (NOT PKG_CONFIG_FOUND)

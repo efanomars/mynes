@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -505,7 +505,7 @@ int32_t MynesEvent::coverArea(int32_t nAreaX, int32_t nAreaY, int32_t nAreaW, in
 		return 0;
 	}
 //std::cout << "MynesEvent::coverArea  nAreaX=" << nAreaX << " nAreaY=" << nAreaY << " nAreaW=" << nAreaW << " nAreaH=" << nAreaH<< '\n';
-			
+
 	int32_t nCoveredMines = 0;
 	for (int32_t nY = nAreaY; nY < nAreaY + nAreaH; ++nY) {
 		for (int32_t nX = nAreaX; nX < nAreaX + nAreaW; ++nX) {

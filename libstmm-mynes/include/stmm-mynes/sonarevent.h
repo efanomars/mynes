@@ -195,8 +195,6 @@ private:
 	std::vector< bool > m_aUpdateMinesNumber; // Size: m_aSonarCells.size()
 
 	Recycler<SonarBlock> m_oSonarBlockRecycler;
-
-	//int32_t m_nCounter;
 private:
 	SonarEvent() = delete;
 	SonarEvent(const SonarEvent& oSource) = delete;

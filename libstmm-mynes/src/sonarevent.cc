@@ -156,7 +156,7 @@ void SonarEvent::trigger(int32_t nMsg, int32_t nValue, Event* p0TriggeringEvent)
 		case SONAR_STATE_INIT:
 		{
 			m_eState = SONAR_STATE_RUN;
-			
+
 			oLevel.boardAddListener(this);
 			checkForSonarCells(m_oData.m_oArea);
 		} //fallthrough
@@ -419,9 +419,10 @@ void SonarEvent::checkForSonarCells(const Coords& oCoords) noexcept
 void SonarEvent::checkForSonarCells(const LevelBlock& oBlock) noexcept
 {
 	NRect oRect;
+	const NPoint oPos = oBlock.blockPos();
 	const NPoint oMinPos = oBlock.blockBricksMinPos();
-	oRect.m_nX = oMinPos.m_nX;
-	oRect.m_nY = oMinPos.m_nY;
+	oRect.m_nX = oPos.m_nX + oMinPos.m_nX;
+	oRect.m_nY = oPos.m_nY + oMinPos.m_nY;
 	const NSize oSize = oBlock.blockSize();
 	oRect.m_nW = oSize.m_nW;
 	oRect.m_nH = oSize.m_nH;
@@ -661,26 +662,47 @@ void SonarEvent::boardPreInsert(Direction::VALUE eDir, NRect oRect, const shared
 	// remove all sonars that will be deleted by insertion
 	NRect oRemoveRect = Helpers::boardInsertRemove(oRect, eDir);
 	removeSonarsIn(oRemoveRect);
-	// remove all sonars that will be scrolled outside the area
+	// remove all moved sonars that will be moved outside the area
+	const NRect oMovedRect = Helpers::boardInsertMovingPre(oRect, eDir);
 	const int32_t nDeltaX = Direction::deltaX(eDir);
 	const int32_t nDeltaY = Direction::deltaY(eDir);
 	for (int32_t nSonarIdx = 0; nSonarIdx < static_cast<int32_t>(m_aSonarCells.size()); ++nSonarIdx) {
 		const NPoint& oXY = m_aSonarCells[nSonarIdx];
-		const int32_t nNewX = oXY.m_nX + nDeltaX;
-		const int32_t nNewY = oXY.m_nY + nDeltaY;
-		const bool bKeep = m_oData.m_oArea.containsPoint(NPoint{nNewX, nNewY});
-		if (! bKeep) {
-			removeSonar(nSonarIdx);
-			// Since the last m_aSonarCells has moved to nSonarIdx redo it
-			--nSonarIdx;
+		if (oMovedRect.containsPoint(oXY)) {
+			const int32_t nNewX = oXY.m_nX + nDeltaX;
+			const int32_t nNewY = oXY.m_nY + nDeltaY;
+			const bool bKeep = m_oData.m_oArea.containsPoint(NPoint{nNewX, nNewY});
+			if (! bKeep) {
+				removeSonar(nSonarIdx);
+				// Since the last m_aSonarCells has moved to nSonarIdx redo it
+				--nSonarIdx;
+			}
 		}
 	}
 }
 void SonarEvent::boardPostInsert(Direction::VALUE eDir, NRect oRect) noexcept
 {
+	// move all sonars inside insert rect,
+	// those pushed outside the area were already removed in boardPreInsert
+	const NRect oMovedRect = Helpers::boardInsertMovingPre(oRect, eDir);
+	const int32_t nDeltaX = Direction::deltaX(eDir);
+	const int32_t nDeltaY = Direction::deltaY(eDir);
+	for (int32_t nSonarIdx = 0; nSonarIdx < static_cast<int32_t>(m_aSonarCells.size()); ++nSonarIdx) {
+		NPoint& oXY = m_aSonarCells[nSonarIdx];
+		if (oMovedRect.containsPoint(oXY)) {
+			oXY.m_nX += nDeltaX;
+			oXY.m_nY += nDeltaY;
+			#ifndef NDEBUG
+			const bool bInArea = m_oData.m_oArea.containsPoint(oXY);
+			assert(bInArea);
+			#endif //NDEBUG
+		}
+	}
 	// add new sonars
-	NRect oAddRect = Helpers::boardInsertAdd(oRect, eDir);
-	checkForSonarCells(oAddRect);
+	NRect oAddRect = NRect::intersectionRect(Helpers::boardInsertAdd(oRect, eDir), m_oData.m_oArea);
+	if (oAddRect.m_nW > 0) {
+		checkForSonarCells(oAddRect);
+	}
 }
 void SonarEvent::boardPreDestroy(const Coords& oCoords) noexcept
 {

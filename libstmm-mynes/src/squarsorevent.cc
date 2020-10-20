@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,12 @@
 #include <stmm-games/util/util.h>
 
 #include <stmm-input-ev/pointerevent.h>
+#include <stmm-input-ev/touchevent.h>
 
 #include <cassert>
 #include <iostream>
 #include <typeinfo>
 #include <cmath>
-#include <stmm-input-ev/touchevent.h>
 
 namespace stmg
 {

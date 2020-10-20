@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
 -->
+<!--
+ * File:   classic2-huge.xml
+-->
 <Game _ign_version="1" internalName="Classic2-Huge" initialInterval="40" additionalHighscoresWait="500"
 			difficulty="45">
 	<Description>Huge 40 by 25 board with 170 bombs for two players.</Description>

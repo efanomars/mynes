@@ -1,41 +1,41 @@
-# File: mynes/mynes-defs.cmake
+# Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; if not, see <http://www.gnu.org/licenses/>
 
-#  Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public
-#  License along with this program; if not, see <http://www.gnu.org/licenses/>
+# File:   mynes-defs.cmake
 
 # Libtool CURRENT/REVISION/AGE: here
 #   MAJOR is CURRENT interface
 #   MINOR is REVISION (implementation of interface)
 #   AGE is always 0
 set(MYNES_MAJOR_VERSION 0)
-set(MYNES_MINOR_VERSION 14) # !-U-!
+set(MYNES_MINOR_VERSION 15) # !-U-!
 set(MYNES_VERSION "${MYNES_MAJOR_VERSION}.${MYNES_MINOR_VERSION}.0")
 
 # required stmm-mynes-xml version
 set(MYNES_REQ_STMM_MYNES_XML_MAJOR_VERSION 0)
-set(MYNES_REQ_STMM_MYNES_XML_MINOR_VERSION 14) # !-U-!
+set(MYNES_REQ_STMM_MYNES_XML_MINOR_VERSION 15) # !-U-!
 set(MYNES_REQ_STMM_MYNES_XML_VERSION "${MYNES_REQ_STMM_MYNES_XML_MAJOR_VERSION}.${MYNES_REQ_STMM_MYNES_XML_MINOR_VERSION}")
 
 # required stmm-games-xml-gtk version
 set(MYNES_REQ_STMM_GAMES_XML_GTK_MAJOR_VERSION 0)
-set(MYNES_REQ_STMM_GAMES_XML_GTK_MINOR_VERSION 25) # !-U-!
+set(MYNES_REQ_STMM_GAMES_XML_GTK_MINOR_VERSION 26) # !-U-!
 set(MYNES_REQ_STMM_GAMES_XML_GTK_VERSION "${MYNES_REQ_STMM_GAMES_XML_GTK_MAJOR_VERSION}.${MYNES_REQ_STMM_GAMES_XML_GTK_MINOR_VERSION}")
 
 # required stmm-input-gtk-dm version
 set(MYNES_REQ_STMM_INPUT_GTK_DM_MAJOR_VERSION 0)
-set(MYNES_REQ_STMM_INPUT_GTK_DM_MINOR_VERSION 14) # !-U-!
+set(MYNES_REQ_STMM_INPUT_GTK_DM_MINOR_VERSION 15) # !-U-!
 set(MYNES_REQ_STMM_INPUT_GTK_DM_VERSION "${MYNES_REQ_STMM_INPUT_GTK_DM_MAJOR_VERSION}.${MYNES_REQ_STMM_INPUT_GTK_DM_MINOR_VERSION}")
 
 if ("${CMAKE_SCRIPT_MODE_FILE}" STREQUAL "")

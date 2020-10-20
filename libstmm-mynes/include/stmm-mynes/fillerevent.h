@@ -1,7 +1,5 @@
 /*
- * File:   fillerevent.h
- *
- * Copyright © 2019  Stefano Marsili, <stemars@gmx.ch>
+ * Copyright © 2019-2020  Stefano Marsili, <stemars@gmx.ch>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +13,9 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
+ */
+/*
+ * File:   fillerevent.h
  */
 
 #ifndef STMG_FILLER_EVENT_H_
@@ -60,7 +61,7 @@ public:
 	};
 	struct LocalInit
 	{
-		Coords m_oCoords; /**< The positions within the board into which tiles are set randomly. 
+		Coords m_oCoords; /**< The positions within the board into which tiles are set randomly.
 							 * If empty entire board is used. */
 		FillGen m_oFillGen; /**< The fill generator. */
 		unique_ptr<TileSelector> m_refTargetTiles; /**< Which tiles should be overwritten. If null only empty tiles are filled. */

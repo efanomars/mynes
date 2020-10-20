@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
 -->
+<!--
+ * File:   libstmm-mynes-xml/data/themes/mynes/simple_m.thm/theme.xml
+-->
 <Theme _ign_version="1" internalName="Simple-M">
 	<Description>Simple - Mynes game theme</Description>
 	<Supports>mynes</Supports>
@@ -98,16 +101,19 @@
 								<Fill/>
 								<TileAni aniId="SonarDirection" aniName="TILEANI:SONAR"
 											_ign_aniFactor="60%" _ign_invert="true"/>
-								<!--Fade aniName="TILEANI:SONAR" invert="true" aniFactor="0%"-->
-								<Text sizeFactor="80%" addToChar="-1000000"/>
-								<!--/Fade-->
+								<Fade aniName="TILEANI:FLOATING"      invert="true" _ign_aniFactor="50%">
+									<Text sizeFactor="80%" addToChar="-1000000"/>
+								</Fade>
 								<Stop/>
 							<Else/>
 								<!-- Any other not named char -->
 								<Fill/>
 								<!--TileAni aniId="SonarDirection" aniName="TILEANI:SONAR"
 											_ign_aniFactor="60%" _ign_invert="true"/-->
-								<Text sizeFactor="100%" _ign_text="Err"/>
+								<Grow aniName="TILEANI:FLOATING"      invert="true" _ign_aniFactor="2%">
+									<ElapsedMapper mappingType="OOR_ALT_MODULO" a="2" max="0.5" shrink="true"/>
+									<Text sizeFactor="100%" _ign_text="Err"/>
+								</Grow>
 								<Stop/>
 						</Conditional>
 					<Elsif><Char charName="MINE"/></Elsif>

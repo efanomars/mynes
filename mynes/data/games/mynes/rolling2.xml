@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public
  * License along with this program; if not, see <http://www.gnu.org/licenses/>
 -->
+<!--
+ * File:   rolling2.xml
+-->
 <Game _ign_version="1" internalName="Rolling2" initialInterval="40" additionalHighscoresWait="500"
 			difficulty="55">
 	<Description>Rolling with islands and sonars for two players.</Description>
@@ -536,6 +539,21 @@
 			<Listener groupName="PUSHED" event="EVID-VAR-SPEED" msgName="VAR_GET_VALUE"/>
 		</ScrollerEvent>
 		<!--LogEvent evId="EVID-LOG-CUR-ROW" toStdOut="true" tag="9993999"/-->
+
+		<_Ign_TileAnimatorEvent start="0" evId="EVID-TA-SONAR" aniName="TILEANI:FLOATING" repeat="100000" blocks="false"
+					 initialWaitMillisecFrom="100" initialWaitMillisecTo="400"
+					 durationMillisecFrom="1000" durationMillisecTo="3000"
+					 pauseMillisecFrom="300" pauseMillisecTo="500"
+					 countFrom="7" countTo="10"    _ign_maxParallel="2">
+			<!--Select><Char char="X" /></Select-->
+			<Select>
+				<And>
+					<Color colorName="blue" />
+					<Char not="true" fromCharCode="1000048" toCharCode="1000057"/>
+				</And>
+			</Select>
+			<!--Listener groupName="FINISHED" event="EVID-TA-ISLAND" msg="0"/-->
+		</_Ign_TileAnimatorEvent>
 
 		<_Ign_ShowTextEvent evId="EVID-STRows" token="%%" duration="15000" start="10">
 			<Line>Input %%im%% %%iv%% %%vpoints%%</Line>
