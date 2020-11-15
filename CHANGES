@@ -1,3 +1,10 @@
+mynes (0.17) unstable; urgency=low
+
+  * Use theme painters
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Sun, 15 Nov 2020 19:29:39 +0100
+
 mynes (0.16) unstable; urgency=low
 
   * Remove gcc from PKGBUILD (requested by AUR)

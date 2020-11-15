@@ -62,7 +62,10 @@
 			<Players fromPlayer="-1" toPlayer="3"/>
 		</Assign>
 	</Assigns>
-	<DrawBlockTile>
+
+	<TilePainters>
+
+	<Painter name="PAINTER:BLOCK" default="true">
 		<Conditional>
 			<If><Char fromChar=" "/></If>
 				<Conditional>
@@ -84,8 +87,9 @@
 					</Case>
 				</Select>
 		</Conditional>
-	</DrawBlockTile>
-	<DrawBoardTile>
+	</Painter>
+
+	<Painter name="PAINTER:BOARD">
 		<SelectAni aniName="TILEANI:COVER">
 			<Case to="0" toExcl="true" _ign_DESC="value is -1.0 which means undefined, Not Covered">
 				<Conditional>
@@ -141,5 +145,7 @@
 				</Conditional>
 			</Default>
 		</SelectAni>
-	</DrawBoardTile>
+	</Painter>
+
+	</TilePainters>
 </Theme>
