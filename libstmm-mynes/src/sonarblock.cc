@@ -31,7 +31,7 @@ namespace stmg { class Tile; }
 namespace stmg
 {
 
-const int32_t SonarBlock::s_nZObjectZSonarBlock = 8;
+const int32_t SonarBlock::s_nZObjectZSonarBlock = 208;
 
 SonarBlock::SonarBlock(const Block& oBlock, int32_t nInitialShape, const NPoint& oPos) noexcept
 : LevelBlock(false)

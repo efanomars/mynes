@@ -1,3 +1,10 @@
+mynes (0.18) unstable; urgency=low
+
+  * Fix z of SonarBlock
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Wed, 25 Nov 2020 19:29:39 +0100
+
 mynes (0.17) unstable; urgency=low
 
   * Use theme painters
