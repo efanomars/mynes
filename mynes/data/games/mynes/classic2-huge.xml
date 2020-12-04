@@ -124,7 +124,7 @@
 		</FillerEvent>
 
 		<FillerEvent evId="EVID-FILLER-COUNT" availablePositionsFactor="1" totTiles="0" mode="IGNORE" priority="-100"
-							_ign_DESC="">
+							_ign_DESC="counts the covrerd cells">
 			<Select>
 				<Font fontNames="MYNES-FLAG-NONE,MYNES-FLAG,MYNES-FLAG-MAYBE"/>
 			</Select>

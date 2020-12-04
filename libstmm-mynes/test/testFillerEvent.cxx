@@ -254,7 +254,7 @@ TEST_CASE_METHOD(STFX<FillerEventCase1GameFixture>, "Case1_Fill_n")
 	REQUIRE( oEntry.m_nLevel == 0 );
 	REQUIRE( oEntry.m_nMsg == 55 );
 	REQUIRE( oEntry.m_nValue == 6 );
-	REQUIRE( oEntry.m_nTriggeringEventAdr == reinterpret_cast<int64_t>(m_p0FillerEvent) );
+	REQUIRE( oEntry.m_nTriggeringEventAddr == reinterpret_cast<int64_t>(m_p0FillerEvent) );
 }
 
 
@@ -408,7 +408,7 @@ TEST_CASE_METHOD(STFX<FillerEventCase2GameFixture>, "Case2_Count")
 	REQUIRE( oEntry.m_nLevel == 0 );
 	REQUIRE( oEntry.m_nMsg == 55 );
 	REQUIRE( oEntry.m_nValue == 5 );
-	REQUIRE( oEntry.m_nTriggeringEventAdr == reinterpret_cast<int64_t>(m_p0FillerEvent) );
+	REQUIRE( oEntry.m_nTriggeringEventAddr == reinterpret_cast<int64_t>(m_p0FillerEvent) );
 }
 
 
