@@ -45,7 +45,7 @@ if (BUILD_TESTING)
              "${STMMI_TEST_SOURCES_DIR}/testLoadGames.cxx"
            )
 
-    set(TEST_MYNES_REQ_STMM_GAMES_FAKE_VERSION "0.30") # !-U-!
+    set(TEST_MYNES_REQ_STMM_GAMES_FAKE_VERSION "0.31") # !-U-!
     set(TEST_MYNES_REQ_STMM_INPUT_FAKE_VERSION "0.16") # !-U-!
 
     include(FindPkgConfig)

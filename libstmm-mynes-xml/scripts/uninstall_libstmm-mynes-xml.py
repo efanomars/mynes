@@ -77,7 +77,7 @@ def main():
 		subprocess.check_call("{} rm    -f             {}/lib/libstmm-mynes-xml.a".format(sSudo, sInstallDir).split())
 		subprocess.check_call("{} rm    -f      {}/lib/pkgconfig/stmm-mynes-xml.pc".format(sSudo, sInstallDir).split())
 		subprocess.check_call("{} rm -r -f       {}/share/doc/libstmm-mynes-xml".format(sSudo, sInstallDir).split())
-		subprocess.check_call("{} rm -r -f {}/share/stmm-games/themes/mynes/simple_s.thm".format(sSudo, sInstallDir).split())
+		subprocess.check_call("{} rm -r -f {}/share/stmm-games/themes/mynes/simple_m.thm".format(sSudo, sInstallDir).split())
 
 	if not oArgs.bNoClean:
 		os.chdir("..")

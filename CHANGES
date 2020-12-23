@@ -1,3 +1,10 @@
+mynes (0.20) unstable; urgency=low
+
+  * Fix uninstall problem
+  * Increase minor version
+
+ -- Stefano Marsili <efanomars@gmx.ch>  Wed, 23 Dec 2020 19:29:39 +0100
+
 mynes (0.19) unstable; urgency=low
 
   * Minor changes

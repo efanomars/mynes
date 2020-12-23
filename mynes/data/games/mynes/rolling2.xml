@@ -187,7 +187,7 @@
 			<Listener groupName="VAR_CHANGED" event="EVID-CC-CLOCK-60SEC" msgName="CUMUL_SET_LEFT_COMPARE"/>
 		</VariableEvent>
 
-		<CumulCmpEvent evId="EVID-CC-CLOCK-60SEC" _ign_DESC="fires a 0 for inputs 60 120 180 ...">
+		<CumulCmpEvent evId="EVID-CC-CLOCK-60SEC" _ign_DESC="fires for inputs 60 120 180 ...">
 			<Filter>
 				<Input msgName="CUMUL_SET_LEFT_COMPARE" fromValue="0" valueMod="60" valueAdd="-1"/>
 			</Filter>
